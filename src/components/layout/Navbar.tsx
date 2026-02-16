@@ -31,7 +31,7 @@ export function Navbar() {
               <Film className="w-5 h-5 text-primary-foreground" />
             </div>
             <span className="font-display text-xl font-bold text-gradient-gold hidden sm:block">
-              CinéCourt
+              Instant
             </span>
           </Link>
 

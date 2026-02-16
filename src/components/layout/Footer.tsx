@@ -13,7 +13,7 @@ export function Footer() {
                 <Film className="w-5 h-5 text-primary-foreground" />
               </div>
               <span className="font-display text-xl font-bold text-gradient-gold">
-                CinéCourt
+                Instant
               </span>
             </Link>
             <p className="text-muted-foreground max-w-md">
@@ -44,7 +44,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-border mt-8 pt-8 flex flex-col md:flex-row items-center justify-between text-sm text-muted-foreground">
-          <p>© 2025 CinéCourt. Tous droits réservés.</p>
+          <p>© 2025 Instant. Tous droits réservés.</p>
           <p className="flex items-center gap-1 mt-2 md:mt-0">
             Fait avec <Heart className="w-4 h-4 text-accent fill-accent" /> pour les cinéphiles
           </p>
