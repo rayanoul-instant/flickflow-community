@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Film, Heart } from 'lucide-react';
+import { Heart } from 'lucide-react';
+import logoInstant from '@/assets/logo-instant.png';
 
 export function Footer() {
   return (
@@ -9,12 +10,7 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 rounded-lg bg-gradient-gold flex items-center justify-center">
-                <Film className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <span className="font-display text-xl font-bold text-gradient-gold">
-                Instant
-              </span>
+              <img src={logoInstant} alt="Instant" className="h-8" />
             </Link>
             <p className="text-muted-foreground max-w-md">
               Découvrez, visionnez et partagez les meilleurs courts métrages libres de droits. 
