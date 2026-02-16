@@ -5,10 +5,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
-import FilmsPage from "./pages/FilmsPage";
+import SearchPage from "./pages/SearchPage";
 import FilmDetailPage from "./pages/FilmDetailPage";
 import DiscussionsPage from "./pages/DiscussionsPage";
 import DiscussionDetailPage from "./pages/DiscussionDetailPage";
+import MessagesPage from "./pages/MessagesPage";
 import AuthPage from "./pages/AuthPage";
 import AccountPage from "./pages/AccountPage";
 import NotFound from "./pages/NotFound";
@@ -24,10 +25,11 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/films" element={<FilmsPage />} />
+            <Route path="/search" element={<SearchPage />} />
             <Route path="/films/:id" element={<FilmDetailPage />} />
             <Route path="/discussions" element={<DiscussionsPage />} />
             <Route path="/discussions/:id" element={<DiscussionDetailPage />} />
+            <Route path="/messages" element={<MessagesPage />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/account" element={<AccountPage />} />
             <Route path="*" element={<NotFound />} />
