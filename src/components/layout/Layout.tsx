@@ -1,19 +1,20 @@
 import { ReactNode } from 'react';
 import { Navbar } from './Navbar';
-import { Footer } from './Footer';
+import { BottomNav } from './BottomNav';
 
 interface LayoutProps {
   children: ReactNode;
+  hideNav?: boolean;
 }
 
-export function Layout({ children }: LayoutProps) {
+export function Layout({ children, hideNav = false }: LayoutProps) {
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <main className="flex-1 pt-16">
+      {!hideNav && <Navbar />}
+      <main className="flex-1 pt-16 pb-20 md:pb-0">
         {children}
       </main>
-      <Footer />
+      {!hideNav && <BottomNav />}
     </div>
   );
 }
