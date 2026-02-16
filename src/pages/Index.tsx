@@ -36,6 +36,7 @@ const Index = () => {
               <span className="text-foreground">Découvrez le</span>{' '}
               <span className="text-gradient-gold">Cinéma Court</span>
             </h1>
+
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
               Explorez des centaines de courts métrages libres de droits. 
               Rejoignez une communauté passionnée par l'art du format court.
@@ -181,7 +182,7 @@ const Index = () => {
             viewport={{ once: true }}
             className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-primary/20 via-accent/10 to-transparent border border-border p-8 md:p-12 text-center"
           >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,hsl(38_90%_55%/0.1),transparent_50%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,hsl(270_70%_55%/0.1),transparent_50%)]" />
             
             <div className="relative z-10">
               <h2 className="font-display text-2xl md:text-4xl font-bold mb-4">

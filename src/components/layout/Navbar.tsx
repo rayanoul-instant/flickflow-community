@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
+import logoInstant from '@/assets/logo-instant.png';
 
 export function Navbar() {
   const { user, signOut } = useAuth();
@@ -27,12 +28,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-lg bg-gradient-gold flex items-center justify-center">
-              <Film className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <span className="font-display text-xl font-bold text-gradient-gold hidden sm:block">
-              Instant
-            </span>
+            <img src={logoInstant} alt="Instant" className="h-8" />
           </Link>
 
           {/* Desktop Navigation */}

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mail, Lock, User, Film, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, User, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import logoInstant from '@/assets/logo-instant.png';
 
 const loginSchema = z.object({
   email: z.string().email('Email invalide'),
@@ -27,11 +28,9 @@ export default function AuthPage() {
   const { user, signIn, signUp, loading } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
-  // Login form
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
 
-  // Signup form
   const [signupEmail, setSignupEmail] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
   const [signupConfirmPassword, setSignupConfirmPassword] = useState('');
@@ -114,14 +113,11 @@ export default function AuthPage() {
       {/* Left Side - Decorative */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-accent/10 to-background" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,hsl(38_90%_55%/0.2),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,hsl(270_70%_55%/0.2),transparent_50%)]" />
         
         <div className="relative z-10 flex flex-col justify-center p-12">
           <Link to="/" className="flex items-center gap-3 mb-12">
-            <div className="w-12 h-12 rounded-xl bg-gradient-gold flex items-center justify-center">
-              <Film className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <span className="font-display text-2xl font-bold text-gradient-gold">Instant</span>
+            <img src={logoInstant} alt="Instant" className="h-10" />
           </Link>
           
           <h1 className="font-display text-4xl md:text-5xl font-bold mb-6">
@@ -150,10 +146,7 @@ export default function AuthPage() {
           </Link>
 
           <div className="lg:hidden flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded-lg bg-gradient-gold flex items-center justify-center">
-              <Film className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <span className="font-display text-xl font-bold text-gradient-gold">Instant</span>
+            <img src={logoInstant} alt="Instant" className="h-8" />
           </div>
 
           <Tabs defaultValue="login" className="w-full">
