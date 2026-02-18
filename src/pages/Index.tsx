@@ -1,39 +1,52 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Play, Star, ArrowRight, TrendingUp, Sparkles, MessageSquare } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { Star, ArrowRight, TrendingUp, Sparkles, MessageSquare } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { FilmCard } from '@/components/films/FilmCard';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useFeaturedFilms, useFilms, useFilmRatings } from '@/hooks/useFilms';
 import { useAuth } from '@/hooks/useAuth';
-import heroBanner from '@/assets/hero-banner.jpg';
+import logoInstant from '@/assets/logo-instant.png';
 
 const Index = () => {
   const { user } = useAuth();
   const { data: popularFilms, isLoading: loadingPopular } = useFilms({ sortBy: 'popular' });
   const { data: recentFilms, isLoading: loadingRecent } = useFilms({ sortBy: 'newest' });
   const { data: featuredFilms } = useFeaturedFilms();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 200);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <Layout>
-      {/* Compact Hero */}
-      <section className="relative h-[50vh] flex items-end overflow-hidden">
-        <div className="absolute inset-0">
-          <img src={heroBanner} alt="Cinema" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
-        </div>
-        <div className="container relative z-10 px-4 pb-8">
+    <Layout showNavLogo={scrolled}>
+      {/* Hero with large logo */}
+      <section className="relative flex items-center justify-center py-20 md:py-32 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
+        <div className="container relative z-10 px-4 text-center">
+          <motion.img
+            src={logoInstant}
+            alt="Instant Films"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: scrolled ? 0 : 1, scale: scrolled ? 0.5 : 1, y: scrolled ? -100 : 0 }}
+            transition={{ duration: 0.5 }}
+            className="h-32 md:h-48 mx-auto mb-6 object-contain"
+          />
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
           >
             <h1 className="text-3xl md:text-5xl font-extrabold mb-2 tracking-tight">
-              Bienvenue sur <span className="text-gradient-gold">Instant</span>
+              Welcome to <span className="text-gradient-gold">Instant</span>.
             </h1>
-            <p className="text-muted-foreground max-w-lg text-sm md:text-base">
-              Découvrez et partagez les meilleurs courts métrages libres de droits.
+            <p className="text-muted-foreground max-w-lg mx-auto text-sm md:text-base">
+              The home of short films. Watch. Explore. Share.
             </p>
           </motion.div>
         </div>
@@ -45,11 +58,11 @@ const Index = () => {
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-primary" />
-              <h2 className="text-xl font-bold">Populaires</h2>
+              <h2 className="text-xl font-bold">Popular</h2>
             </div>
             <Link to="/search?sortBy=popular">
               <Button variant="ghost" size="sm" className="text-primary text-sm">
-                Voir tout <ArrowRight className="w-4 h-4 ml-1" />
+                See all <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
             </Link>
           </div>
@@ -57,13 +70,13 @@ const Index = () => {
           {loadingPopular ? (
             <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
               {[...Array(5)].map((_, i) => (
-                <div key={i} className="w-36 flex-shrink-0 aspect-[2/3] rounded-xl bg-muted animate-pulse" />
+                <div key={i} className="w-64 flex-shrink-0 aspect-[16/9] rounded-xl bg-muted animate-pulse" />
               ))}
             </div>
           ) : (
             <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
               {popularFilms?.slice(0, 8).map((film) => (
-                <div key={film.id} className="w-36 md:w-44 flex-shrink-0">
+                <div key={film.id} className="w-64 md:w-72 flex-shrink-0">
                   <FilmCard film={film} />
                 </div>
               ))}
@@ -78,23 +91,23 @@ const Index = () => {
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-accent" />
-              <h2 className="text-xl font-bold">Recommandés pour vous</h2>
+              <h2 className="text-xl font-bold">Recommended for you</h2>
             </div>
             <Link to="/search">
               <Button variant="ghost" size="sm" className="text-primary text-sm">
-                Voir tout <ArrowRight className="w-4 h-4 ml-1" />
+                See all <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
             </Link>
           </div>
 
           {loadingRecent ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="aspect-[2/3] rounded-xl bg-muted animate-pulse" />
+                <div key={i} className="aspect-[16/9] rounded-xl bg-muted animate-pulse" />
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {(featuredFilms || recentFilms)?.slice(0, 4).map((film) => (
                 <FilmCard key={film.id} film={film} />
               ))}
@@ -110,7 +123,6 @@ const Index = () => {
             <MessageSquare className="w-5 h-5 text-primary" />
             <h2 className="text-xl font-bold">Top Reviews</h2>
           </div>
-
           <TopReviews />
         </div>
       </section>
@@ -120,13 +132,13 @@ const Index = () => {
         <section className="py-8">
           <div className="container px-4">
             <div className="rounded-2xl bg-gradient-to-br from-primary/20 via-accent/10 to-transparent border border-border p-6 text-center">
-              <h2 className="text-xl font-bold mb-2">Rejoignez Instant</h2>
+              <h2 className="text-xl font-bold mb-2">Join Instant</h2>
               <p className="text-muted-foreground text-sm mb-4 max-w-md mx-auto">
-                Créez votre compte et commencez à découvrir des courts métrages exceptionnels.
+                Create your account and start discovering exceptional short films.
               </p>
               <Link to="/auth">
                 <Button className="btn-cinema">
-                  <span>Créer un compte</span>
+                  <span>Create an account</span>
                 </Button>
               </Link>
             </div>
@@ -138,12 +150,9 @@ const Index = () => {
 };
 
 function TopReviews() {
-  // We'll show recent film ratings as "top reviews"
   const { data: films } = useFilms({ sortBy: 'popular' });
   const firstFilmId = films?.[0]?.id;
   const { data: ratings } = useFilmRatings(firstFilmId || '');
-
-  // Show placeholder reviews if no data
   const displayReviews = ratings?.slice(0, 3);
 
   if (!displayReviews || displayReviews.length === 0) {
@@ -162,7 +171,7 @@ function TopReviews() {
           </div>
         ))}
         <p className="text-center text-muted-foreground text-sm py-2">
-          Aucune review pour le moment. Soyez le premier à noter un film !
+          No reviews yet. Be the first to rate a film!
         </p>
       </div>
     );
@@ -186,7 +195,7 @@ function TopReviews() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between mb-1">
                 <span className="font-semibold text-sm">
-                  {review.profile?.username || 'Utilisateur'}
+                  {review.profile?.username || 'User'}
                 </span>
                 <div className="flex items-center gap-1 text-primary">
                   <Star className="w-3 h-3 fill-primary" />
@@ -200,7 +209,7 @@ function TopReviews() {
                 to={`/films/${review.film_id}`}
                 className="text-xs text-primary hover:underline mt-1 inline-block"
               >
-                Voir le film →
+                View film →
               </Link>
             </div>
           </div>

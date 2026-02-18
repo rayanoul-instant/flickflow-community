@@ -1,13 +1,12 @@
-import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Home, Search as SearchIcon, MessageCircle, User, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 import logoInstant from '@/assets/logo-instant.png';
 
-export function Navbar() {
+export function Navbar({ showLogo = true }: { showLogo?: boolean }) {
   const { user, signOut } = useAuth();
   const location = useLocation();
 
@@ -29,10 +28,12 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <img 
+            <motion.img 
               src={logoInstant} 
               alt="Instant" 
-              className="h-10 object-contain mix-blend-screen" 
+              className="h-10 object-contain"
+              animate={{ opacity: showLogo ? 1 : 0, scale: showLogo ? 1 : 0.8 }}
+              transition={{ duration: 0.3 }}
             />
           </Link>
 

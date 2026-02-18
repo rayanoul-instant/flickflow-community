@@ -41,7 +41,7 @@ export function FilmCard({ film, featured = false }: FilmCardProps) {
         {/* Thumbnail */}
         <div className={cn(
           "relative overflow-hidden bg-secondary",
-          featured ? "aspect-[16/9]" : "aspect-[2/3]"
+          "aspect-[16/9]"
         )}>
           {film.thumbnail_url ? (
             <img
