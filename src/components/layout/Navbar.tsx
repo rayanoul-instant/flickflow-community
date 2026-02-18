@@ -11,10 +11,10 @@ export function Navbar({ showLogo = true }: { showLogo?: boolean }) {
   const location = useLocation();
 
   const navLinks = [
-    { href: '/', label: 'Accueil', icon: Home },
-    { href: '/search', label: 'Recherche', icon: SearchIcon },
+    { href: '/', label: 'Home', icon: Home },
+    { href: '/search', label: 'Search', icon: SearchIcon },
     { href: '/messages', label: 'Messages', icon: MessageCircle },
-    { href: '/account', label: 'Compte', icon: User },
+    { href: '/account', label: 'Account', icon: User },
   ];
 
   const isActive = (href: string) => {
@@ -26,7 +26,6 @@ export function Navbar({ showLogo = true }: { showLogo?: boolean }) {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
             <motion.img 
               src={logoInstant} 
@@ -37,7 +36,6 @@ export function Navbar({ showLogo = true }: { showLogo?: boolean }) {
             />
           </Link>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
               <Link
@@ -56,7 +54,6 @@ export function Navbar({ showLogo = true }: { showLogo?: boolean }) {
             ))}
           </div>
 
-          {/* Right Side */}
           <div className="flex items-center gap-3">
             {user ? (
               <div className="hidden md:flex items-center gap-2">
@@ -66,7 +63,7 @@ export function Navbar({ showLogo = true }: { showLogo?: boolean }) {
                   onClick={() => signOut()}
                   className="border-border hover:bg-secondary text-sm"
                 >
-                  Déconnexion
+                  Log out
                 </Button>
               </div>
             ) : (
@@ -74,7 +71,7 @@ export function Navbar({ showLogo = true }: { showLogo?: boolean }) {
                 <Button variant="default" size="sm" className="btn-cinema">
                   <span className="flex items-center gap-2">
                     <LogIn className="w-4 h-4" />
-                    Connexion
+                    Log in
                   </span>
                 </Button>
               </Link>

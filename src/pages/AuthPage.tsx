@@ -12,15 +12,15 @@ import { z } from 'zod';
 import logoInstant from '@/assets/logo-instant.png';
 
 const loginSchema = z.object({
-  email: z.string().email('Email invalide'),
-  password: z.string().min(6, 'Le mot de passe doit contenir au moins 6 caractères'),
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
 const signupSchema = loginSchema.extend({
-  username: z.string().min(3, 'Le pseudo doit contenir au moins 3 caractères').max(20, 'Le pseudo ne peut pas dépasser 20 caractères'),
+  username: z.string().min(3, 'Username must be at least 3 characters').max(20, 'Username cannot exceed 20 characters'),
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
-  message: 'Les mots de passe ne correspondent pas',
+  message: 'Passwords do not match',
   path: ['confirmPassword'],
 });
 
@@ -63,12 +63,12 @@ export default function AuthPage() {
       const { error } = await signIn(loginEmail, loginPassword);
       if (error) {
         if (error.message.includes('Invalid login credentials')) {
-          toast.error('Email ou mot de passe incorrect');
+          toast.error('Invalid email or password');
         } else {
           toast.error(error.message);
         }
       } else {
-        toast.success('Connexion réussie !');
+        toast.success('Logged in successfully!');
       }
     } finally {
       setIsLoading(false);
@@ -96,12 +96,12 @@ export default function AuthPage() {
       const { error } = await signUp(signupEmail, signupPassword, signupUsername);
       if (error) {
         if (error.message.includes('already registered')) {
-          toast.error('Cet email est déjà utilisé');
+          toast.error('This email is already in use');
         } else {
           toast.error(error.message);
         }
       } else {
-        toast.success('Compte créé avec succès ! Bienvenue sur Instant');
+        toast.success('Account created! Welcome to Instant');
       }
     } finally {
       setIsLoading(false);
@@ -121,11 +121,11 @@ export default function AuthPage() {
           </Link>
           
           <h1 className="font-display text-4xl md:text-5xl font-bold mb-6">
-            Rejoignez la communauté <span className="text-gradient-gold">cinéphile</span>
+            Join the <span className="text-gradient-gold">film</span> community
           </h1>
           <p className="text-lg text-muted-foreground max-w-md">
-            Découvrez des courts métrages exceptionnels, partagez vos avis et connectez-vous 
-            avec des passionnés du format court.
+            Discover exceptional short films, share your reviews, and connect 
+            with fellow short film enthusiasts.
           </p>
         </div>
       </div>
@@ -142,7 +142,7 @@ export default function AuthPage() {
             className="lg:hidden flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            Retour
+            Back
           </Link>
 
           <div className="lg:hidden flex items-center gap-3 mb-8">
@@ -152,10 +152,10 @@ export default function AuthPage() {
           <Tabs defaultValue="login" className="w-full">
             <TabsList className="grid w-full grid-cols-2 bg-secondary mb-8">
               <TabsTrigger value="login" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                Connexion
+                Log in
               </TabsTrigger>
               <TabsTrigger value="signup" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                Inscription
+                Sign up
               </TabsTrigger>
             </TabsList>
 
@@ -168,7 +168,7 @@ export default function AuthPage() {
                     <Input
                       id="login-email"
                       type="email"
-                      placeholder="vous@exemple.com"
+                      placeholder="you@example.com"
                       value={loginEmail}
                       onChange={(e) => setLoginEmail(e.target.value)}
                       className="pl-10 bg-secondary border-border"
@@ -178,7 +178,7 @@ export default function AuthPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="login-password">Mot de passe</Label>
+                  <Label htmlFor="login-password">Password</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                     <Input
@@ -198,7 +198,7 @@ export default function AuthPage() {
                   className="w-full btn-cinema" 
                   disabled={isLoading}
                 >
-                  <span>{isLoading ? 'Connexion...' : 'Se connecter'}</span>
+                  <span>{isLoading ? 'Logging in...' : 'Log in'}</span>
                 </Button>
               </form>
             </TabsContent>
@@ -206,13 +206,13 @@ export default function AuthPage() {
             <TabsContent value="signup">
               <form onSubmit={handleSignup} className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="signup-username">Pseudo</Label>
+                  <Label htmlFor="signup-username">Username</Label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                     <Input
                       id="signup-username"
                       type="text"
-                      placeholder="VotrePseudo"
+                      placeholder="YourUsername"
                       value={signupUsername}
                       onChange={(e) => setSignupUsername(e.target.value)}
                       className="pl-10 bg-secondary border-border"
@@ -228,7 +228,7 @@ export default function AuthPage() {
                     <Input
                       id="signup-email"
                       type="email"
-                      placeholder="vous@exemple.com"
+                      placeholder="you@example.com"
                       value={signupEmail}
                       onChange={(e) => setSignupEmail(e.target.value)}
                       className="pl-10 bg-secondary border-border"
@@ -238,7 +238,7 @@ export default function AuthPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="signup-password">Mot de passe</Label>
+                  <Label htmlFor="signup-password">Password</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                     <Input
@@ -254,7 +254,7 @@ export default function AuthPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="signup-confirm">Confirmer le mot de passe</Label>
+                  <Label htmlFor="signup-confirm">Confirm password</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                     <Input
@@ -274,14 +274,14 @@ export default function AuthPage() {
                   className="w-full btn-cinema" 
                   disabled={isLoading}
                 >
-                  <span>{isLoading ? 'Création...' : 'Créer mon compte'}</span>
+                  <span>{isLoading ? 'Creating...' : 'Create my account'}</span>
                 </Button>
               </form>
             </TabsContent>
           </Tabs>
 
           <p className="text-center text-sm text-muted-foreground mt-8">
-            En vous inscrivant, vous acceptez nos conditions d'utilisation et notre politique de confidentialité.
+            By signing up, you agree to our terms of service and privacy policy.
           </p>
         </motion.div>
       </div>

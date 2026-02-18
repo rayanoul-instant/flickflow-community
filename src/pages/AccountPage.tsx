@@ -9,7 +9,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/useAuth';
 import { useFavorites, useWatchHistory } from '@/hooks/useFilms';
@@ -49,7 +48,7 @@ export default function AccountPage() {
 
   const handleSaveProfile = async () => {
     if (!editUsername.trim()) {
-      toast.error('Le pseudo ne peut pas être vide');
+      toast.error('Username cannot be empty');
       return;
     }
 
@@ -60,9 +59,9 @@ export default function AccountPage() {
     });
 
     if (error) {
-      toast.error('Erreur lors de la mise à jour');
+      toast.error('Failed to update profile');
     } else {
-      toast.success('Profil mis à jour');
+      toast.success('Profile updated');
       setIsEditing(false);
     }
   };
@@ -70,7 +69,7 @@ export default function AccountPage() {
   const stats = {
     filmsWatched: history?.length || 0,
     favorites: favorites?.length || 0,
-    avgRating: 7.5, // Placeholder
+    avgRating: 7.5,
   };
 
   return (
@@ -83,7 +82,6 @@ export default function AccountPage() {
           className="cinema-card p-6 md:p-8 mb-8"
         >
           <div className="flex flex-col md:flex-row gap-6">
-            {/* Avatar */}
             <div className="flex-shrink-0">
               <Avatar className="w-24 h-24 md:w-32 md:h-32">
                 <AvatarFallback className="bg-gradient-gold text-3xl md:text-4xl text-primary-foreground font-display">
@@ -92,12 +90,11 @@ export default function AccountPage() {
               </Avatar>
             </div>
 
-            {/* Info */}
             <div className="flex-1">
               {isEditing ? (
                 <div className="space-y-4">
                   <div>
-                    <label className="text-sm text-muted-foreground mb-2 block">Pseudo</label>
+                    <label className="text-sm text-muted-foreground mb-2 block">Username</label>
                     <Input
                       value={editUsername}
                       onChange={(e) => setEditUsername(e.target.value)}
@@ -110,7 +107,7 @@ export default function AccountPage() {
                       value={editBio}
                       onChange={(e) => setEditBio(e.target.value)}
                       className="bg-secondary border-border"
-                      placeholder="Parlez-nous de vous..."
+                      placeholder="Tell us about yourself..."
                       rows={3}
                     />
                   </div>
@@ -143,7 +140,7 @@ export default function AccountPage() {
                     <Button onClick={handleSaveProfile} className="btn-cinema">
                       <span className="flex items-center gap-2">
                         <Save className="w-4 h-4" />
-                        Enregistrer
+                        Save
                       </span>
                     </Button>
                     <Button 
@@ -151,7 +148,7 @@ export default function AccountPage() {
                       onClick={() => setIsEditing(false)}
                       className="border-border"
                     >
-                      Annuler
+                      Cancel
                     </Button>
                   </div>
                 </div>
@@ -160,7 +157,7 @@ export default function AccountPage() {
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <h1 className="font-display text-2xl md:text-3xl font-bold mb-1">
-                        {profile?.username || 'Utilisateur'}
+                        {profile?.username || 'User'}
                       </h1>
                       <p className="text-muted-foreground">{user.email}</p>
                     </div>
@@ -176,7 +173,7 @@ export default function AccountPage() {
                       className="border-border"
                     >
                       <Edit2 className="w-4 h-4 mr-2" />
-                      Modifier
+                      Edit
                     </Button>
                   </div>
                   
@@ -184,22 +181,21 @@ export default function AccountPage() {
                     <p className="text-muted-foreground mb-4">{profile.bio}</p>
                   )}
 
-                  {/* Stats */}
                   <div className="flex flex-wrap gap-6">
                     <div className="flex items-center gap-2">
                       <Film className="w-5 h-5 text-primary" />
                       <span className="font-semibold">{stats.filmsWatched}</span>
-                      <span className="text-muted-foreground">films vus</span>
+                      <span className="text-muted-foreground">watched</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Heart className="w-5 h-5 text-accent" />
                       <span className="font-semibold">{stats.favorites}</span>
-                      <span className="text-muted-foreground">favoris</span>
+                      <span className="text-muted-foreground">favorites</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Star className="w-5 h-5 text-primary fill-primary" />
                       <span className="font-semibold">{stats.avgRating}</span>
-                      <span className="text-muted-foreground">note moyenne</span>
+                      <span className="text-muted-foreground">avg rating</span>
                     </div>
                   </div>
                 </>
@@ -213,24 +209,24 @@ export default function AccountPage() {
           <TabsList className="bg-secondary">
             <TabsTrigger value="favorites" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Heart className="w-4 h-4 mr-2" />
-              Favoris
+              Favorites
             </TabsTrigger>
             <TabsTrigger value="history" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Clock className="w-4 h-4 mr-2" />
-              Historique
+              History
             </TabsTrigger>
             <TabsTrigger value="stats" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <BarChart3 className="w-4 h-4 mr-2" />
-              Statistiques
+              Stats
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="favorites">
-            <h2 className="font-display text-xl font-semibold mb-4">Mes films favoris</h2>
+            <h2 className="font-display text-xl font-semibold mb-4">My favorite films</h2>
             {loadingFavorites ? (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[...Array(4)].map((_, i) => (
-                  <Skeleton key={i} className="aspect-[2/3] rounded-xl" />
+                  <Skeleton key={i} className="aspect-[16/9] rounded-xl" />
                 ))}
               </div>
             ) : favorites && favorites.length > 0 ? (
@@ -242,10 +238,10 @@ export default function AccountPage() {
             ) : (
               <div className="text-center py-12">
                 <Heart className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">Aucun film favori pour le moment</p>
-                <Link to="/films">
+                <p className="text-muted-foreground">No favorite films yet</p>
+                <Link to="/search">
                   <Button variant="outline" className="mt-4 border-border">
-                    Découvrir des films
+                    Discover films
                   </Button>
                 </Link>
               </div>
@@ -253,7 +249,7 @@ export default function AccountPage() {
           </TabsContent>
 
           <TabsContent value="history">
-            <h2 className="font-display text-xl font-semibold mb-4">Historique de visionnage</h2>
+            <h2 className="font-display text-xl font-semibold mb-4">Watch history</h2>
             {loadingHistory ? (
               <div className="space-y-3">
                 {[...Array(5)].map((_, i) => (
@@ -268,7 +264,7 @@ export default function AccountPage() {
                     to={`/films/${item.film.id}`}
                     className="flex items-center gap-4 p-4 rounded-xl bg-card hover:bg-secondary transition-colors"
                   >
-                    <div className="w-16 h-24 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+                    <div className="w-16 h-10 rounded-lg bg-muted flex items-center justify-center flex-shrink-0 overflow-hidden">
                       {item.film.thumbnail_url ? (
                         <img 
                           src={item.film.thumbnail_url} 
@@ -281,12 +277,10 @@ export default function AccountPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold line-clamp-1">{item.film.title}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {item.film.director}
-                      </p>
+                      <p className="text-sm text-muted-foreground">{item.film.director}</p>
                       <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
                         <Clock className="w-3 h-3" />
-                        {new Date(item.watched_at).toLocaleDateString('fr-FR')}
+                        {new Date(item.watched_at).toLocaleDateString('en-US')}
                       </div>
                     </div>
                   </Link>
@@ -295,10 +289,10 @@ export default function AccountPage() {
             ) : (
               <div className="text-center py-12">
                 <Clock className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">Aucun film visionné récemment</p>
-                <Link to="/films">
+                <p className="text-muted-foreground">No films watched recently</p>
+                <Link to="/search">
                   <Button variant="outline" className="mt-4 border-border">
-                    Regarder un film
+                    Watch a film
                   </Button>
                 </Link>
               </div>
@@ -306,28 +300,28 @@ export default function AccountPage() {
           </TabsContent>
 
           <TabsContent value="stats">
-            <h2 className="font-display text-xl font-semibold mb-4">Mes statistiques</h2>
+            <h2 className="font-display text-xl font-semibold mb-4">My stats</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="cinema-card p-6 text-center">
                 <Film className="w-8 h-8 text-primary mx-auto mb-3" />
                 <p className="font-display text-3xl font-bold text-gradient-gold mb-1">
                   {stats.filmsWatched}
                 </p>
-                <p className="text-muted-foreground">Films visionnés</p>
+                <p className="text-muted-foreground">Films watched</p>
               </div>
               <div className="cinema-card p-6 text-center">
                 <Heart className="w-8 h-8 text-accent mx-auto mb-3" />
                 <p className="font-display text-3xl font-bold text-gradient-gold mb-1">
                   {stats.favorites}
                 </p>
-                <p className="text-muted-foreground">Films favoris</p>
+                <p className="text-muted-foreground">Favorite films</p>
               </div>
               <div className="cinema-card p-6 text-center">
                 <Star className="w-8 h-8 text-primary fill-primary mx-auto mb-3" />
                 <p className="font-display text-3xl font-bold text-gradient-gold mb-1">
                   {stats.avgRating}/10
                 </p>
-                <p className="text-muted-foreground">Note moyenne donnée</p>
+                <p className="text-muted-foreground">Average rating given</p>
               </div>
             </div>
           </TabsContent>

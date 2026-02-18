@@ -12,7 +12,6 @@ import { useDiscussion, useComments, useCreateComment, useLikeDiscussion } from 
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
-import { fr } from 'date-fns/locale';
 import { Comment } from '@/types/database';
 
 function CommentItem({ 
@@ -40,9 +39,9 @@ function CommentItem({
       });
       setReplyContent('');
       setShowReply(false);
-      toast.success('Réponse publiée');
+      toast.success('Reply posted');
     } catch {
-      toast.error('Erreur lors de la publication');
+      toast.error('Failed to post reply');
     }
   };
 
@@ -58,13 +57,10 @@ function CommentItem({
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
             <span className="font-medium text-sm">
-              {comment.profile?.username || 'Utilisateur'}
+              {comment.profile?.username || 'User'}
             </span>
             <span className="text-xs text-muted-foreground">
-              {formatDistanceToNow(new Date(comment.created_at), { 
-                addSuffix: true, 
-                locale: fr 
-              })}
+              {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
             </span>
           </div>
           
@@ -78,7 +74,7 @@ function CommentItem({
               className="text-xs text-primary hover:underline flex items-center gap-1"
             >
               <Reply className="w-3 h-3" />
-              Répondre
+              Reply
             </button>
           )}
           
@@ -89,7 +85,7 @@ function CommentItem({
               className="mt-3 flex gap-2"
             >
               <Textarea
-                placeholder="Votre réponse..."
+                placeholder="Your reply..."
                 value={replyContent}
                 onChange={(e) => setReplyContent(e.target.value)}
                 className="bg-secondary border-border text-sm min-h-[60px]"
@@ -107,7 +103,6 @@ function CommentItem({
         </div>
       </div>
       
-      {/* Replies */}
       {comment.replies && comment.replies.length > 0 && (
         <div className="space-y-4">
           {comment.replies.map((reply) => (
@@ -136,7 +131,7 @@ export default function DiscussionDetailPage() {
 
   const handleComment = async () => {
     if (!newComment.trim()) {
-      toast.error('Veuillez écrire un commentaire');
+      toast.error('Please write a comment');
       return;
     }
     
@@ -146,15 +141,15 @@ export default function DiscussionDetailPage() {
         content: newComment,
       });
       setNewComment('');
-      toast.success('Commentaire publié');
+      toast.success('Comment posted');
     } catch {
-      toast.error('Erreur lors de la publication');
+      toast.error('Failed to post comment');
     }
   };
 
   const handleLike = () => {
     if (!user) {
-      toast.error('Connectez-vous pour aimer cette discussion');
+      toast.error('Sign in to like this discussion');
       return;
     }
     likeDiscussion.mutate(id!);
@@ -177,9 +172,9 @@ export default function DiscussionDetailPage() {
     return (
       <Layout>
         <div className="container px-4 py-16 text-center">
-          <h1 className="text-2xl font-bold mb-4">Discussion non trouvée</h1>
+          <h1 className="text-2xl font-bold mb-4">Discussion not found</h1>
           <Link to="/discussions">
-            <Button>Retour aux discussions</Button>
+            <Button>Back to discussions</Button>
           </Link>
         </div>
       </Layout>
@@ -189,22 +184,19 @@ export default function DiscussionDetailPage() {
   return (
     <Layout>
       <div className="container px-4 py-8 max-w-4xl">
-        {/* Back Button */}
         <Link 
           to="/discussions" 
           className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          Retour aux discussions
+          Back to discussions
         </Link>
 
-        {/* Discussion */}
         <motion.article
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="cinema-card p-6 md:p-8 mb-8"
         >
-          {/* Header */}
           <div className="flex items-start gap-4 mb-6">
             <Avatar className="w-12 h-12">
               <AvatarFallback className="bg-primary/20 text-primary">
@@ -219,14 +211,11 @@ export default function DiscussionDetailPage() {
               
               <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                 <span className="text-primary">
-                  @{discussion.profile?.username || 'utilisateur'}
+                  @{discussion.profile?.username || 'user'}
                 </span>
                 <span className="flex items-center gap-1">
                   <Clock className="w-3 h-3" />
-                  {formatDistanceToNow(new Date(discussion.created_at), { 
-                    addSuffix: true, 
-                    locale: fr 
-                  })}
+                  {formatDistanceToNow(new Date(discussion.created_at), { addSuffix: true })}
                 </span>
                 {discussion.film && (
                   <Link to={`/films/${discussion.film.id}`}>
@@ -240,30 +229,26 @@ export default function DiscussionDetailPage() {
             </div>
           </div>
 
-          {/* Content */}
           <p className="text-foreground/90 leading-relaxed whitespace-pre-wrap mb-6">
             {discussion.content}
           </p>
 
-          {/* Actions */}
           <div className="flex items-center gap-4 pt-4 border-t border-border">
             <button
               onClick={handleLike}
               className="flex items-center gap-2 text-muted-foreground hover:text-accent transition-colors"
             >
               <Heart className="w-5 h-5" />
-              <span>{discussion.likes_count} j'aime</span>
+              <span>{discussion.likes_count} likes</span>
             </button>
           </div>
         </motion.article>
 
-        {/* Comments Section */}
         <section>
           <h2 className="font-display text-xl font-semibold mb-6">
-            Commentaires ({comments?.length || 0})
+            Comments ({comments?.length || 0})
           </h2>
 
-          {/* New Comment */}
           {user ? (
             <div className="flex gap-3 mb-8">
               <Avatar className="w-10 h-10 flex-shrink-0">
@@ -273,7 +258,7 @@ export default function DiscussionDetailPage() {
               </Avatar>
               <div className="flex-1 flex gap-2">
                 <Textarea
-                  placeholder="Ajouter un commentaire..."
+                  placeholder="Add a comment..."
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   className="bg-secondary border-border min-h-[80px]"
@@ -290,13 +275,12 @@ export default function DiscussionDetailPage() {
           ) : (
             <div className="bg-card/50 border border-border rounded-xl p-4 mb-8 text-center">
               <p className="text-muted-foreground">
-                <Link to="/auth" className="text-primary hover:underline">Connectez-vous</Link>
-                {' '}pour commenter
+                <Link to="/auth" className="text-primary hover:underline">Sign in</Link>
+                {' '}to comment
               </p>
             </div>
           )}
 
-          {/* Comments List */}
           {comments && comments.length > 0 ? (
             <div className="space-y-6">
               {comments.map((comment) => (
@@ -309,7 +293,7 @@ export default function DiscussionDetailPage() {
             </div>
           ) : (
             <p className="text-center text-muted-foreground py-8">
-              Aucun commentaire pour le moment. Soyez le premier !
+              No comments yet. Be the first!
             </p>
           )}
         </section>
