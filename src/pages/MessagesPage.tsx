@@ -1,17 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Send, Film, Search } from 'lucide-react';
+import { Send, Search } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
-import { fr } from 'date-fns/locale';
 
 interface Conversation {
   userId: string;
@@ -75,7 +72,7 @@ export default function MessagesPage() {
         .single();
       convs.push({
         userId,
-        username: profile?.username || 'Utilisateur',
+        username: profile?.username || 'User',
         lastMessage: msg.content,
         lastMessageAt: msg.created_at,
         unread: msg.receiver_id === user.id && !msg.is_read,
@@ -96,7 +93,6 @@ export default function MessagesPage() {
       .order('created_at', { ascending: true });
     setMessages(data || []);
 
-    // Mark as read
     await supabase
       .from('messages')
       .update({ is_read: true })
@@ -112,7 +108,7 @@ export default function MessagesPage() {
       content: newMessage,
     });
     if (error) {
-      toast.error('Erreur lors de l\'envoi');
+      toast.error('Failed to send message');
       return;
     }
     setNewMessage('');
@@ -151,7 +147,7 @@ export default function MessagesPage() {
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
-            placeholder="Chercher un utilisateur..."
+            placeholder="Search for a user..."
             value={searchUser}
             onChange={(e) => handleSearchUsers(e.target.value)}
             className="pl-10 bg-secondary border-border"
@@ -187,7 +183,7 @@ export default function MessagesPage() {
               </div>
             ) : conversations.length === 0 ? (
               <div className="p-6 text-center text-muted-foreground text-sm">
-                Aucune conversation. Recherchez un utilisateur pour commencer.
+                No conversations yet. Search for a user to start.
               </div>
             ) : (
               conversations.map((conv) => (
@@ -240,7 +236,7 @@ export default function MessagesPage() {
                 </div>
                 <div className="p-3 border-t border-border flex gap-2">
                   <Input
-                    placeholder="Écrire un message..."
+                    placeholder="Write a message..."
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSend()}
@@ -253,7 +249,7 @@ export default function MessagesPage() {
               </>
             ) : (
               <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
-                Sélectionnez une conversation ou cherchez un utilisateur
+                Select a conversation or search for a user
               </div>
             )}
           </div>

@@ -3,10 +3,10 @@ import { Home, Search, MessageCircle, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { href: '/', label: 'Accueil', icon: Home },
-  { href: '/search', label: 'Recherche', icon: Search },
+  { href: '/', label: 'Home', icon: Home },
+  { href: '/search', label: 'Search', icon: Search },
   { href: '/messages', label: 'Messages', icon: MessageCircle },
-  { href: '/account', label: 'Compte', icon: User },
+  { href: '/account', label: 'Account', icon: User },
 ];
 
 export function BottomNav() {

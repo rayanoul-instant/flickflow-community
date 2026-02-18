@@ -34,27 +34,27 @@ export default function FilmDetailPage() {
 
   const handleRate = async () => {
     if (!user) {
-      toast.error('Connectez-vous pour noter ce film');
+      toast.error('Sign in to rate this film');
       return;
     }
     if (userRating === 0) {
-      toast.error('Veuillez sélectionner une note');
+      toast.error('Please select a rating');
       return;
     }
     
     try {
       await rateFilm.mutateAsync({ filmId: id!, rating: userRating, review: review || undefined });
-      toast.success('Votre note a été enregistrée');
+      toast.success('Your rating has been saved');
       setShowReviewForm(false);
       setReview('');
     } catch {
-      toast.error('Erreur lors de l\'enregistrement');
+      toast.error('Failed to save rating');
     }
   };
 
   const handleFavorite = () => {
     if (!user) {
-      toast.error('Connectez-vous pour ajouter aux favoris');
+      toast.error('Sign in to add to favorites');
       return;
     }
     toggleFavorite.mutate(id!);
@@ -62,7 +62,7 @@ export default function FilmDetailPage() {
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
-    toast.success('Lien copié dans le presse-papier');
+    toast.success('Link copied to clipboard');
   };
 
   const handlePlay = () => {
@@ -89,9 +89,9 @@ export default function FilmDetailPage() {
     return (
       <Layout>
         <div className="container px-4 py-16 text-center">
-          <h1 className="text-2xl font-bold mb-4">Film non trouvé</h1>
-          <Link to="/films">
-            <Button>Retour au catalogue</Button>
+          <h1 className="text-2xl font-bold mb-4">Film not found</h1>
+          <Link to="/search">
+            <Button>Back to catalog</Button>
           </Link>
         </div>
       </Layout>
@@ -101,13 +101,11 @@ export default function FilmDetailPage() {
   return (
     <Layout>
       <div className="container px-4 py-8">
-        {/* Back Button */}
-        <Link to="/films" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors">
+        <Link to="/search" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors">
           <ArrowLeft className="w-4 h-4" />
-          Retour au catalogue
+          Back to catalog
         </Link>
 
-        {/* Video Player */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -121,9 +119,7 @@ export default function FilmDetailPage() {
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Info */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Title & Actions */}
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
               <div>
                 <h1 className="font-display text-3xl md:text-4xl font-bold mb-2">
@@ -160,7 +156,6 @@ export default function FilmDetailPage() {
               </div>
             </div>
 
-            {/* Metadata */}
             <div className="flex flex-wrap items-center gap-4 text-sm">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Clock className="w-4 h-4" />
@@ -175,11 +170,10 @@ export default function FilmDetailPage() {
               <div className="flex items-center gap-2">
                 <Star className="w-4 h-4 text-primary fill-primary" />
                 <span className="font-medium">{film.average_rating?.toFixed(1) || 'N/A'}</span>
-                <span className="text-muted-foreground">({ratings?.length || 0} avis)</span>
+                <span className="text-muted-foreground">({ratings?.length || 0} reviews)</span>
               </div>
             </div>
 
-            {/* Genres */}
             <div className="flex flex-wrap gap-2">
               {film.genres.map((genre) => (
                 <Badge key={genre} variant="secondary" className="bg-secondary text-secondary-foreground">
@@ -188,7 +182,6 @@ export default function FilmDetailPage() {
               ))}
             </div>
 
-            {/* Synopsis */}
             {film.synopsis && (
               <div>
                 <h2 className="font-display text-xl font-semibold mb-3">Synopsis</h2>
@@ -196,10 +189,9 @@ export default function FilmDetailPage() {
               </div>
             )}
 
-            {/* Themes */}
             {film.themes.length > 0 && (
               <div>
-                <h2 className="font-display text-xl font-semibold mb-3">Thèmes</h2>
+                <h2 className="font-display text-xl font-semibold mb-3">Themes</h2>
                 <div className="flex flex-wrap gap-2">
                   {film.themes.map((theme) => (
                     <Badge key={theme} variant="outline" className="border-border capitalize">
@@ -211,11 +203,9 @@ export default function FilmDetailPage() {
             )}
           </div>
 
-          {/* Sidebar - Ratings */}
           <div className="space-y-6">
-            {/* Rate this film */}
             <div className="cinema-card p-6">
-              <h3 className="font-display text-lg font-semibold mb-4">Noter ce film</h3>
+              <h3 className="font-display text-lg font-semibold mb-4">Rate this film</h3>
               
               {user ? (
                 <>
@@ -235,7 +225,7 @@ export default function FilmDetailPage() {
                       {showReviewForm ? (
                         <>
                           <Textarea
-                            placeholder="Votre avis (optionnel)"
+                            placeholder="Your review (optional)"
                             value={review}
                             onChange={(e) => setReview(e.target.value)}
                             className="bg-secondary border-border"
@@ -243,28 +233,28 @@ export default function FilmDetailPage() {
                           />
                           <div className="flex gap-2">
                             <Button onClick={handleRate} className="btn-cinema flex-1">
-                              <span>Publier</span>
+                              <span>Submit</span>
                             </Button>
                             <Button 
                               variant="outline" 
                               onClick={() => setShowReviewForm(false)}
                               className="border-border"
                             >
-                              Annuler
+                              Cancel
                             </Button>
                           </div>
                         </>
                       ) : (
                         <div className="flex gap-2">
                           <Button onClick={handleRate} className="btn-cinema flex-1">
-                            <span>Noter</span>
+                            <span>Rate</span>
                           </Button>
                           <Button 
                             variant="outline" 
                             onClick={() => setShowReviewForm(true)}
                             className="border-border"
                           >
-                            + Avis
+                            + Review
                           </Button>
                         </div>
                       )}
@@ -274,17 +264,16 @@ export default function FilmDetailPage() {
               ) : (
                 <p className="text-muted-foreground text-sm">
                   <Link to="/auth" className="text-primary hover:underline">
-                    Connectez-vous
+                    Sign in
                   </Link>
-                  {' '}pour noter ce film
+                  {' '}to rate this film
                 </p>
               )}
             </div>
 
-            {/* Recent Reviews */}
             <div className="cinema-card p-6">
               <h3 className="font-display text-lg font-semibold mb-4">
-                Avis récents ({ratings?.length || 0})
+                Recent reviews ({ratings?.length || 0})
               </h3>
               
               {ratings && ratings.length > 0 ? (
@@ -299,7 +288,7 @@ export default function FilmDetailPage() {
                             </AvatarFallback>
                           </Avatar>
                           <span className="font-medium text-sm">
-                            {rating.profile?.username || 'Utilisateur'}
+                            {rating.profile?.username || 'User'}
                           </span>
                         </div>
                         <div className="flex items-center gap-1 text-primary">
@@ -317,7 +306,7 @@ export default function FilmDetailPage() {
                 </div>
               ) : (
                 <p className="text-muted-foreground text-sm">
-                  Aucun avis pour le moment. Soyez le premier !
+                  No reviews yet. Be the first!
                 </p>
               )}
             </div>
