@@ -81,7 +81,6 @@ export function useFilmRatings(filmId: string) {
   return useQuery({
     queryKey: ['film-ratings', filmId],
     queryFn: async () => {
-      // First get ratings
       const { data: ratings, error } = await supabase
         .from('film_ratings')
         .select('*')
@@ -90,23 +89,22 @@ export function useFilmRatings(filmId: string) {
       
       if (error) throw error;
 
-      // Then get profiles for each rating
       const ratingsWithProfiles = await Promise.all(
         (ratings || []).map(async (rating) => {
           const { data: profile } = await supabase
             .from('profiles')
-            .select('username')
+            .select('username, avatar_accessories, avatar_base')
             .eq('id', rating.user_id)
             .single();
           
           return {
             ...rating,
-            profile: profile || { username: 'Utilisateur' }
+            profile: profile || { username: 'User' }
           };
         })
       );
 
-      return ratingsWithProfiles as (FilmRating & { profile: { username: string } })[];
+      return ratingsWithProfiles as (FilmRating & { profile: { username: string; avatar_accessories?: any; avatar_base?: string } })[];
     },
     enabled: !!filmId,
   });

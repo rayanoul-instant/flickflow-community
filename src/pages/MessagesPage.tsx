@@ -215,8 +215,10 @@ export default function MessagesPage() {
           <div className="md:col-span-2 flex flex-col border border-border rounded-xl bg-card overflow-hidden">
             {selectedUser ? (
               <>
-                <div className="px-4 py-3 border-b border-border bg-secondary/50">
-                  <span className="font-semibold text-sm">{selectedUsername}</span>
+                <div className="px-4 py-3 border-b border-border bg-secondary/50 flex items-center justify-between">
+                  <Link to={`/user/${selectedUser}`} className="font-semibold text-sm hover:text-primary transition-colors">
+                    {selectedUsername}
+                  </Link>
                 </div>
                 <div className="flex-1 overflow-y-auto p-4 space-y-3">
                   {messages.map((msg) => (

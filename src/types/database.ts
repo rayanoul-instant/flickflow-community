@@ -94,16 +94,16 @@ export interface Message {
 }
 
 export const GENRE_LABELS: Record<FilmGenre, string> = {
-  drama: 'Drame',
-  comedy: 'Comédie',
-  horror: 'Horreur',
-  scifi: 'Science-Fiction',
-  documentary: 'Documentaire',
+  drama: 'Drama',
+  comedy: 'Comedy',
+  horror: 'Horror',
+  scifi: 'Sci-Fi',
+  documentary: 'Documentary',
   animation: 'Animation',
-  experimental: 'Expérimental',
+  experimental: 'Experimental',
   romance: 'Romance',
   thriller: 'Thriller',
-  fantasy: 'Fantastique',
+  fantasy: 'Fantasy',
 };
 
 export const AVATAR_BASES = ['default', 'cat', 'dog', 'robot', 'alien', 'ghost'];

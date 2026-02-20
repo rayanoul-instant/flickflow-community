@@ -360,6 +360,27 @@ export type Database = {
         }
         Relationships: []
       }
+      review_likes: {
+        Row: {
+          created_at: string
+          id: string
+          rating_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          rating_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          rating_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       watch_history: {
         Row: {
           film_id: string
