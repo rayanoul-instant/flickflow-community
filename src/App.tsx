@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,14 +22,13 @@ const queryClient = new QueryClient();
 const App = () => {
   const [showSplash, setShowSplash] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setShowSplash(false), 2200);
-    return () => clearTimeout(timer);
+  const handleSplashDone = useCallback(() => {
+    setShowSplash(false);
   }, []);
 
   return (
     <>
-      <SplashScreen show={showSplash} />
+      <SplashScreen show={showSplash} onDone={handleSplashDone} />
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <TooltipProvider>
