@@ -11,7 +11,7 @@ export function SplashScreen({ show, onDone }: SplashScreenProps) {
     <AnimatePresence>
       {show && (
         <motion.div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-background"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black"
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5, ease: 'easeInOut' }}
         >
@@ -21,7 +21,7 @@ export function SplashScreen({ show, onDone }: SplashScreenProps) {
             muted
             playsInline
             onEnded={onDone}
-            className="max-h-[60vh] max-w-[80vw] object-contain"
+            className="w-full h-full object-cover"
           />
         </motion.div>
       )}

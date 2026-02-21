@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Star, Clock, Heart, Edit2, Save, Film, ChevronDown, ThumbsUp, Check } from 'lucide-react';
+import { User, Star, Clock, Heart, Edit2, Save, Film, ChevronDown, ThumbsUp, Check, X, Plus } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { FilmCard } from '@/components/films/FilmCard';
 import { AvatarDisplay, AVATAR_COLORS, AVATAR_HATS, AVATAR_FACE, AVATAR_EXTRAS } from '@/components/films/AvatarDisplay';
@@ -10,12 +10,12 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/useAuth';
-import { useFavorites, useWatchHistory } from '@/hooks/useFilms';
+import { useFavorites, useWatchHistory, useFilms, useToggleFavorite } from '@/hooks/useFilms';
 import { useFollowersCount, useFollowingCount } from '@/hooks/useFollowers';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 
 function useMyRatings(userId?: string) {
@@ -51,12 +51,16 @@ export default function AccountPage() {
   const { user, profile, loading, updateProfile } = useAuth();
   const { data: favorites } = useFavorites();
   const { data: history } = useWatchHistory();
+  const { data: allFilms } = useFilms();
   const { data: myRatings } = useMyRatings(user?.id);
   const { data: reviewLikes } = useMyReviewLikes(user?.id);
   const { data: followersCount = 0 } = useFollowersCount(user?.id || '');
   const { data: followingCount = 0 } = useFollowingCount(user?.id || '');
+  const toggleFavorite = useToggleFavorite();
+  const queryClient = useQueryClient();
 
   const [isEditing, setIsEditing] = useState(false);
+  const [editTab, setEditTab] = useState<'profile' | 'avatar' | 'top3'>('profile');
   const [editUsername, setEditUsername] = useState('');
   const [editBio, setEditBio] = useState('');
   const [avatarColor, setAvatarColor] = useState('#7C3AED');
@@ -64,6 +68,7 @@ export default function AccountPage() {
   const [avatarFace, setAvatarFace] = useState('none');
   const [avatarExtra, setAvatarExtra] = useState('none');
   const [showAllReviews, setShowAllReviews] = useState(false);
+  const [searchTop3, setSearchTop3] = useState('');
 
   if (loading) {
     return (
@@ -91,6 +96,7 @@ export default function AccountPage() {
     setAvatarHat(acc?.hat || 'none');
     setAvatarFace(acc?.face || 'none');
     setAvatarExtra(acc?.extra || 'none');
+    setEditTab('profile');
     setIsEditing(true);
   };
 
@@ -103,6 +109,11 @@ export default function AccountPage() {
     });
     if (error) { toast.error('Failed to update profile'); }
     else { toast.success('Profile updated!'); setIsEditing(false); }
+  };
+
+  const handleToggleTop3 = async (filmId: string) => {
+    await toggleFavorite.mutateAsync(filmId);
+    queryClient.invalidateQueries({ queryKey: ['favorites'] });
   };
 
   const getLikes = (ratingId: string) =>
@@ -121,6 +132,14 @@ export default function AccountPage() {
 
   const currentAcc = profile?.avatar_accessories as any;
 
+  // Films available for Top 3 search (not already in favorites)
+  const favoriteFilmIds = new Set(favorites?.map(f => f.film_id) || []);
+  const filteredSearchFilms = (allFilms || []).filter(f =>
+    !favoriteFilmIds.has(f.id) &&
+    searchTop3.length > 0 &&
+    f.title.toLowerCase().includes(searchTop3.toLowerCase())
+  ).slice(0, 5);
+
   return (
     <Layout>
       <div className="container px-4 py-8 max-w-3xl mx-auto">
@@ -132,31 +151,59 @@ export default function AccountPage() {
         >
           {isEditing ? (
             <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row gap-6 items-center">
-                {/* Live preview */}
-                <AvatarDisplay
-                  color={avatarColor}
-                  hat={avatarHat === 'none' ? undefined : avatarHat}
-                  face={avatarFace === 'none' ? undefined : avatarFace}
-                  extra={avatarExtra === 'none' ? undefined : avatarExtra}
-                  size="xl"
-                />
-                <div className="flex-1 space-y-4 w-full">
-                  <div>
-                    <label className="text-sm text-muted-foreground mb-1 block">Username</label>
-                    <Input value={editUsername} onChange={(e) => setEditUsername(e.target.value)} className="bg-secondary border-border" />
-                  </div>
-                  <div>
-                    <label className="text-sm text-muted-foreground mb-1 block">Bio</label>
-                    <Textarea value={editBio} onChange={(e) => setEditBio(e.target.value)} className="bg-secondary border-border" placeholder="Tell us about yourself..." rows={2} />
-                  </div>
-                </div>
+              {/* Tabs */}
+              <div className="flex gap-1 p-1 bg-secondary rounded-lg w-fit">
+                {(['profile', 'avatar', 'top3'] as const).map(tab => (
+                  <button
+                    key={tab}
+                    onClick={() => setEditTab(tab)}
+                    className={cn(
+                      "px-4 py-2 rounded-md text-sm font-medium transition-all",
+                      editTab === tab
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    {tab === 'profile' ? 'Profile' : tab === 'avatar' ? 'Avatar' : 'Top 3'}
+                  </button>
+                ))}
               </div>
 
-              {/* Avatar customization */}
-              <div>
-                <p className="text-sm font-medium mb-3">Customize your avatar</p>
-                <div className="space-y-4">
+              {/* Profile Tab */}
+              {editTab === 'profile' && (
+                <div className="flex flex-col sm:flex-row gap-6 items-center">
+                  <AvatarDisplay
+                    color={avatarColor}
+                    hat={avatarHat === 'none' ? undefined : avatarHat}
+                    face={avatarFace === 'none' ? undefined : avatarFace}
+                    extra={avatarExtra === 'none' ? undefined : avatarExtra}
+                    size="xl"
+                  />
+                  <div className="flex-1 space-y-4 w-full">
+                    <div>
+                      <label className="text-sm text-muted-foreground mb-1 block">Username</label>
+                      <Input value={editUsername} onChange={(e) => setEditUsername(e.target.value)} className="bg-secondary border-border" />
+                    </div>
+                    <div>
+                      <label className="text-sm text-muted-foreground mb-1 block">Bio</label>
+                      <Textarea value={editBio} onChange={(e) => setEditBio(e.target.value)} className="bg-secondary border-border" placeholder="Tell us about yourself..." rows={2} />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Avatar Tab */}
+              {editTab === 'avatar' && (
+                <div className="space-y-6">
+                  <div className="flex justify-center">
+                    <AvatarDisplay
+                      color={avatarColor}
+                      hat={avatarHat === 'none' ? undefined : avatarHat}
+                      face={avatarFace === 'none' ? undefined : avatarFace}
+                      extra={avatarExtra === 'none' ? undefined : avatarExtra}
+                      size="xl"
+                    />
+                  </div>
                   {/* Color */}
                   <div>
                     <p className="text-xs text-muted-foreground mb-2">Color</p>
@@ -176,62 +223,100 @@ export default function AccountPage() {
                       ))}
                     </div>
                   </div>
-
                   {/* Hat */}
                   <div>
                     <p className="text-xs text-muted-foreground mb-2">Hat</p>
                     <div className="flex flex-wrap gap-2">
                       {AVATAR_HATS.map((h) => (
-                        <button
-                          key={h.id}
-                          onClick={() => setAvatarHat(h.id)}
+                        <button key={h.id} onClick={() => setAvatarHat(h.id)}
                           className={cn("px-3 py-1.5 rounded-lg text-sm border transition-all",
                             avatarHat === h.id ? "border-primary bg-primary/10 text-primary" : "border-border bg-secondary hover:border-muted-foreground"
-                          )}
-                        >
+                          )}>
                           {h.emoji || '—'} {h.label}
                         </button>
                       ))}
                     </div>
                   </div>
-
                   {/* Face */}
                   <div>
                     <p className="text-xs text-muted-foreground mb-2">Face accessory</p>
                     <div className="flex flex-wrap gap-2">
                       {AVATAR_FACE.map((f) => (
-                        <button
-                          key={f.id}
-                          onClick={() => setAvatarFace(f.id)}
+                        <button key={f.id} onClick={() => setAvatarFace(f.id)}
                           className={cn("px-3 py-1.5 rounded-lg text-sm border transition-all",
                             avatarFace === f.id ? "border-primary bg-primary/10 text-primary" : "border-border bg-secondary hover:border-muted-foreground"
-                          )}
-                        >
+                          )}>
                           {f.emoji || '—'} {f.label}
                         </button>
                       ))}
                     </div>
                   </div>
-
                   {/* Extra */}
                   <div>
                     <p className="text-xs text-muted-foreground mb-2">Extra</p>
                     <div className="flex flex-wrap gap-2">
                       {AVATAR_EXTRAS.map((e) => (
-                        <button
-                          key={e.id}
-                          onClick={() => setAvatarExtra(e.id)}
+                        <button key={e.id} onClick={() => setAvatarExtra(e.id)}
                           className={cn("px-3 py-1.5 rounded-lg text-sm border transition-all",
                             avatarExtra === e.id ? "border-primary bg-primary/10 text-primary" : "border-border bg-secondary hover:border-muted-foreground"
-                          )}
-                        >
+                          )}>
                           {e.emoji || '—'} {e.label}
                         </button>
                       ))}
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
+
+              {/* Top 3 Tab */}
+              {editTab === 'top3' && (
+                <div className="space-y-4">
+                  <p className="text-sm text-muted-foreground">Choose up to 3 favorite films to display on your profile. You currently have {favorites?.length || 0} favorites — the first 3 will be shown.</p>
+
+                  {/* Current top 3 */}
+                  <div className="space-y-2">
+                    {topFavorites.map((fav, i) => fav.film && (
+                      <div key={fav.id} className="flex items-center gap-3 p-3 rounded-lg bg-secondary">
+                        <span className="text-primary font-bold text-sm">#{i + 1}</span>
+                        <div className="w-10 h-7 rounded overflow-hidden flex-shrink-0 bg-muted">
+                          {fav.film.thumbnail_url && <img src={fav.film.thumbnail_url} alt="" className="w-full h-full object-cover" />}
+                        </div>
+                        <span className="flex-1 text-sm font-medium truncate">{fav.film.title}</span>
+                        <button
+                          onClick={() => handleToggleTop3(fav.film_id)}
+                          className="text-muted-foreground hover:text-destructive transition-colors"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                    {topFavorites.length < 3 && (
+                      <div className="border border-dashed border-border rounded-lg p-3">
+                        <Input
+                          placeholder="Search a film to add..."
+                          value={searchTop3}
+                          onChange={(e) => setSearchTop3(e.target.value)}
+                          className="bg-transparent border-0 p-0 h-auto focus-visible:ring-0"
+                        />
+                        {filteredSearchFilms.length > 0 && (
+                          <div className="mt-2 space-y-1">
+                            {filteredSearchFilms.map(f => (
+                              <button
+                                key={f.id}
+                                onClick={() => { handleToggleTop3(f.id); setSearchTop3(''); }}
+                                className="w-full flex items-center gap-3 p-2 rounded-md hover:bg-muted transition-colors text-left"
+                              >
+                                <Plus className="w-4 h-4 text-primary flex-shrink-0" />
+                                <span className="text-sm truncate">{f.title}</span>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
 
               <div className="flex gap-2">
                 <Button onClick={handleSaveProfile} className="btn-cinema">
@@ -298,17 +383,27 @@ export default function AccountPage() {
         </motion.div>
 
         {/* Top 3 Favorites */}
-        {topFavorites.length > 0 && !isEditing && (
+        {!isEditing && (
           <div className="mb-8">
             <h2 className="font-display text-xl font-semibold mb-4 flex items-center gap-2">
               <Heart className="w-5 h-5 text-accent fill-accent" />
               Top 3 Favorites
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {topFavorites.map((fav) => fav.film && (
-                <FilmCard key={fav.id} film={fav.film} />
-              ))}
-            </div>
+            {topFavorites.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {topFavorites.map((fav) => fav.film && (
+                  <FilmCard key={fav.id} film={fav.film} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-6 text-muted-foreground cinema-card">
+                <Heart className="w-8 h-8 mx-auto mb-2 opacity-20" />
+                <p className="text-sm">No favorites yet.</p>
+                <Button variant="outline" size="sm" onClick={openEdit} className="mt-3 border-border">
+                  Add your Top 3
+                </Button>
+              </div>
+            )}
           </div>
         )}
 
