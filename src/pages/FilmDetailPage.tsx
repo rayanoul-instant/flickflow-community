@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Clock, Calendar, User, Star, Heart, Share2, ThumbsUp, MessageSquare, Film } from 'lucide-react';
+import { ArrowLeft, Clock, Calendar, User, Star, Heart, Share2, ThumbsUp, MessageSquare, Film, ArrowUpRight } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { VideoPlayer } from '@/components/films/VideoPlayer';
 import { StarRating } from '@/components/films/StarRating';
@@ -12,6 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useFilm, useFilmRatings, useRateFilm, useToggleFavorite, useFavorites, useAddToHistory } from '@/hooks/useFilms';
 import { useAuth } from '@/hooks/useAuth';
+import { useFollowingList } from '@/hooks/useFollowers';
 import { GENRE_LABELS } from '@/types/database';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -65,6 +66,7 @@ export default function FilmDetailPage() {
   const { data: ratings } = useFilmRatings(id!);
   const { data: favorites } = useFavorites();
   const { data: reviewLikes } = useReviewLikes(id!);
+  const { data: followingList } = useFollowingList();
   const rateFilm = useRateFilm();
   const toggleFavorite = useToggleFavorite();
   const addToHistory = useAddToHistory();
@@ -74,8 +76,6 @@ export default function FilmDetailPage() {
   const [review, setReview] = useState('');
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
-  const [shareSearch, setShareSearch] = useState('');
-  const [shareResults, setShareResults] = useState<any[]>([]);
 
   const isFavorited = favorites?.some((f) => f.film_id === id);
 
@@ -103,22 +103,10 @@ export default function FilmDetailPage() {
     toast.success('Link copied to clipboard!');
   };
 
-  const handleShareSearch = async (query: string) => {
-    setShareSearch(query);
-    if (query.length < 2) { setShareResults([]); return; }
-    const { data } = await supabase
-      .from('profiles')
-      .select('id, username')
-      .ilike('username', `%${query}%`)
-      .neq('id', user?.id || '')
-      .limit(5);
-    setShareResults(data || []);
-  };
-
   const handleSendFilm = async (receiverId: string, receiverUsername: string) => {
-    if (!user) return;
-    const filmUrl = window.location.href;
-    const message = `🎬 Check out this short film: "${film?.title}" — ${filmUrl}`;
+    if (!user || !film) return;
+    const filmUrl = `${window.location.origin}/films/${id}`;
+    const message = `🎬 [film:${id}:${film.title}:${film.thumbnail_url || ''}]`;
     await supabase.from('messages').insert({
       sender_id: user.id,
       receiver_id: receiverId,
@@ -126,8 +114,6 @@ export default function FilmDetailPage() {
     });
     toast.success(`Film shared with ${receiverUsername}!`);
     setShowShareModal(false);
-    setShareSearch('');
-    setShareResults([]);
   };
 
   const handlePlay = () => { if (user) addToHistory.mutate(id!); };
@@ -230,49 +216,28 @@ export default function FilmDetailPage() {
           </div>
         )}
 
-        {/* ===== CENTRAL ACTION BUTTONS: RATE / SHARE / REVIEW ===== */}
-        <div className="grid grid-cols-3 gap-4 mb-10">
-          {/* RATE */}
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="cinema-card p-5 flex flex-col items-center text-center cursor-pointer"
-            onClick={() => !showReviewForm && setShowReviewForm(true)}
+        {/* ===== ACTION BUTTONS: RATE & REVIEW / SHARE ===== */}
+        <div className="flex gap-3 mb-8">
+          <Button
+            onClick={() => setShowReviewForm(true)}
+            className="btn-cinema flex-1"
+            size="lg"
           >
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3">
-              <Star className="w-6 h-6 text-primary fill-primary" />
-            </div>
-            <span className="font-display font-bold text-lg mb-1">Rate</span>
-            <span className="text-xs text-muted-foreground">Give your stars</span>
-          </motion.div>
-
-          {/* SHARE */}
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="cinema-card p-5 flex flex-col items-center text-center cursor-pointer"
+            <Star className="w-4 h-4 mr-2 fill-primary-foreground" />
+            Rate & Review
+          </Button>
+          <Button
             onClick={() => {
               if (!user) { toast.error('Sign in to share'); return; }
               setShowShareModal(true);
             }}
+            variant="outline"
+            size="lg"
+            className="flex-1 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
           >
-            <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center mb-3">
-              <Share2 className="w-6 h-6 text-accent" />
-            </div>
-            <span className="font-display font-bold text-lg mb-1">Share</span>
-            <span className="text-xs text-muted-foreground">Send to a friend</span>
-          </motion.div>
-
-          {/* REVIEW */}
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="cinema-card p-5 flex flex-col items-center text-center cursor-pointer"
-            onClick={() => setShowReviewForm(true)}
-          >
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3">
-              <MessageSquare className="w-6 h-6 text-primary" />
-            </div>
-            <span className="font-display font-bold text-lg mb-1">Review</span>
-            <span className="text-xs text-muted-foreground">Write your thoughts</span>
-          </motion.div>
+            <ArrowUpRight className="w-4 h-4 mr-2" />
+            Share
+          </Button>
         </div>
 
         {/* Rating/Review Form */}
@@ -309,7 +274,7 @@ export default function FilmDetailPage() {
           </motion.div>
         )}
 
-        {/* Share Modal */}
+        {/* Share Modal - shows following list */}
         {showShareModal && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -324,24 +289,25 @@ export default function FilmDetailPage() {
               <Share2 className="w-4 h-4 mr-2" />
               Copy link to clipboard
             </Button>
-            <div className="relative">
-              <p className="text-sm text-muted-foreground mb-2">Or send directly to a user:</p>
-              <input
-                type="text"
-                placeholder="Search for a user..."
-                value={shareSearch}
-                onChange={(e) => handleShareSearch(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-secondary border border-border text-sm focus:outline-none focus:ring-1 focus:ring-primary"
-              />
-              {shareResults.length > 0 && (
-                <div className="mt-2 space-y-1">
-                  {shareResults.map((u) => (
+            <div>
+              <p className="text-sm text-muted-foreground mb-3">Send to someone you follow:</p>
+              {(followingList || []).length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-4">You're not following anyone yet.</p>
+              ) : (
+                <div className="space-y-1 max-h-60 overflow-y-auto">
+                  {followingList?.map((u) => (
                     <button
                       key={u.id}
                       onClick={() => handleSendFilm(u.id, u.username)}
                       className="w-full flex items-center gap-3 px-3 py-2 rounded-lg bg-secondary hover:bg-muted transition-colors text-left"
                     >
-                      <AvatarDisplay size="sm" />
+                      <AvatarDisplay
+                        size="sm"
+                        color={u.avatar_accessories?.color}
+                        hat={u.avatar_accessories?.hat}
+                        face={u.avatar_accessories?.face}
+                        extra={u.avatar_accessories?.extra}
+                      />
                       <span className="text-sm font-medium">{u.username}</span>
                       <span className="ml-auto text-xs text-primary">Send →</span>
                     </button>

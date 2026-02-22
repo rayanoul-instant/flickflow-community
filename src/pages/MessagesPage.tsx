@@ -221,20 +221,42 @@ export default function MessagesPage() {
                   </Link>
                 </div>
                 <div className="flex-1 overflow-y-auto p-4 space-y-3">
-                  {messages.map((msg) => (
-                    <div
-                      key={msg.id}
-                      className={`flex ${msg.sender_id === user.id ? 'justify-end' : 'justify-start'}`}
-                    >
-                      <div className={`max-w-[75%] rounded-2xl px-4 py-2 text-sm ${
-                        msg.sender_id === user.id
-                          ? 'bg-primary text-primary-foreground rounded-br-sm'
-                          : 'bg-secondary text-secondary-foreground rounded-bl-sm'
-                      }`}>
-                        {msg.content}
+                  {messages.map((msg) => {
+                    const filmMatch = msg.content.match(/🎬 \[film:([^:]+):([^:]+):([^\]]*)\]/);
+                    return (
+                      <div
+                        key={msg.id}
+                        className={`flex ${msg.sender_id === user.id ? 'justify-end' : 'justify-start'}`}
+                      >
+                        {filmMatch ? (
+                          <Link
+                            to={`/films/${filmMatch[1]}`}
+                            className={`max-w-[75%] rounded-2xl overflow-hidden block ${
+                              msg.sender_id === user.id
+                                ? 'bg-primary/20 border border-primary/30 rounded-br-sm'
+                                : 'bg-secondary border border-border rounded-bl-sm'
+                            }`}
+                          >
+                            {filmMatch[3] && (
+                              <img src={filmMatch[3]} alt={filmMatch[2]} className="w-full aspect-video object-cover" />
+                            )}
+                            <div className="px-4 py-2">
+                              <p className="text-sm font-medium">🎬 {filmMatch[2]}</p>
+                              <p className="text-xs text-primary mt-0.5">Tap to watch →</p>
+                            </div>
+                          </Link>
+                        ) : (
+                          <div className={`max-w-[75%] rounded-2xl px-4 py-2 text-sm ${
+                            msg.sender_id === user.id
+                              ? 'bg-primary text-primary-foreground rounded-br-sm'
+                              : 'bg-secondary text-secondary-foreground rounded-bl-sm'
+                          }`}>
+                            {msg.content}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
                 <div className="p-3 border-t border-border flex gap-2">
                   <Input

@@ -77,3 +77,31 @@ export function useToggleFollow() {
     },
   });
 }
+
+export function useFollowingList() {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ['following-list', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('followers')
+        .select('following_id')
+        .eq('follower_id', user.id);
+      if (error) throw error;
+      // Get profiles for each following
+      const profiles = await Promise.all(
+        (data || []).map(async (f) => {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('id, username, avatar_accessories')
+            .eq('id', f.following_id)
+            .single();
+          return profile;
+        })
+      );
+      return profiles.filter(Boolean) as { id: string; username: string; avatar_accessories: any }[];
+    },
+    enabled: !!user,
+  });
+}

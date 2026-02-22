@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Star, Clock, Heart, Edit2, Save, Film, ChevronDown, ThumbsUp, Check, X, Plus } from 'lucide-react';
+import { User, Star, Clock, Heart, Edit2, Save, Film, ChevronDown, ThumbsUp, Check, X, Plus, Eye } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { FilmCard } from '@/components/films/FilmCard';
 import { AvatarDisplay, AVATAR_COLORS, AVATAR_HATS, AVATAR_FACE, AVATAR_EXTRAS } from '@/components/films/AvatarDisplay';
@@ -360,9 +360,9 @@ export default function AccountPage() {
                     <span className="text-muted-foreground text-sm">following</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Heart className="w-4 h-4 text-accent" />
-                    <span className="font-semibold">{favorites?.length || 0}</span>
-                    <span className="text-muted-foreground text-sm">favorites</span>
+                    <Eye className="w-4 h-4 text-primary" />
+                    <span className="font-semibold">{history?.length || 0}</span>
+                    <span className="text-muted-foreground text-sm">watched</span>
                   </div>
                   {avgRating && (
                     <div className="flex items-center gap-2">
@@ -371,11 +371,6 @@ export default function AccountPage() {
                       <span className="text-muted-foreground text-sm">avg rating</span>
                     </div>
                   )}
-                  <div className="flex items-center gap-2">
-                    <Film className="w-4 h-4 text-primary" />
-                    <span className="font-semibold">{history?.length || 0}</span>
-                    <span className="text-muted-foreground text-sm">watched</span>
-                  </div>
                 </div>
               </div>
             </div>
@@ -392,7 +387,7 @@ export default function AccountPage() {
             {topFavorites.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {topFavorites.map((fav) => fav.film && (
-                  <FilmCard key={fav.id} film={fav.film} />
+                  <FilmCard key={fav.id} film={fav.film} isTop3 />
                 ))}
               </div>
             ) : (
@@ -447,6 +442,28 @@ export default function AccountPage() {
                     {showAllReviews ? 'Show less' : `Show ${(myRatings?.length || 0) - 4} more reviews`}
                   </button>
                 )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Liked Films */}
+        {!isEditing && (
+          <div className="mt-8">
+            <h2 className="font-display text-xl font-semibold mb-4 flex items-center gap-2">
+              <Heart className="w-5 h-5 text-accent fill-accent" />
+              Liked
+            </h2>
+            {(favorites || []).length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <Heart className="w-10 h-10 mx-auto mb-3 opacity-20" />
+                <p>No liked films yet. Tap the heart on a film to add it here.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {favorites?.map((fav) => fav.film && (
+                  <FilmCard key={fav.id} film={fav.film} />
+                ))}
               </div>
             )}
           </div>
