@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Star, Heart, Users, ThumbsUp, ChevronDown } from 'lucide-react';
+import { Star, Heart, Users, ThumbsUp, ChevronDown, MessageCircle, Eye } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { FilmCard } from '@/components/films/FilmCard';
 import { AvatarDisplay } from '@/components/films/AvatarDisplay';
@@ -15,6 +15,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
 
 export default function UserProfilePage() {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
   const { data: followersCount = 0 } = useFollowersCount(id!);
@@ -26,6 +27,7 @@ export default function UserProfilePage() {
   const [favorites, setFavorites] = useState<any[]>([]);
   const [ratings, setRatings] = useState<any[]>([]);
   const [reviewLikes, setReviewLikes] = useState<any[]>([]);
+  const [watchCount, setWatchCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showAllReviews, setShowAllReviews] = useState(false);
 
@@ -35,7 +37,7 @@ export default function UserProfilePage() {
 
   const loadProfile = async () => {
     setLoading(true);
-    const [profileRes, ratingsRes, likesRes] = await Promise.all([
+    const [profileRes, ratingsRes, likesRes, watchRes] = await Promise.all([
       supabase.from('profiles').select('*').eq('id', id!).single(),
       supabase
         .from('film_ratings')
@@ -44,11 +46,13 @@ export default function UserProfilePage() {
         .order('created_at', { ascending: false })
         .limit(20),
       supabase.from('review_likes').select('*'),
+      supabase.from('watch_history').select('id', { count: 'exact', head: true }).eq('user_id', id!),
     ]);
 
     setProfile(profileRes.data);
     setRatings(ratingsRes.data || []);
     setReviewLikes(likesRes.data || []);
+    setWatchCount(watchRes.count || 0);
 
     const { data: favData } = await supabase
       .from('favorites')
@@ -143,14 +147,24 @@ export default function UserProfilePage() {
                   )}
                 </div>
                 {user && user.id !== id && (
-                  <Button
-                    variant={isFollowing ? 'outline' : 'default'}
-                    size="sm"
-                    onClick={handleFollow}
-                    className={isFollowing ? 'border-border' : 'btn-cinema'}
-                  >
-                    {isFollowing ? 'Following' : 'Follow'}
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      variant={isFollowing ? 'outline' : 'default'}
+                      size="sm"
+                      onClick={handleFollow}
+                      className={isFollowing ? 'border-border' : 'btn-cinema'}
+                    >
+                      {isFollowing ? 'Following' : 'Follow'}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => navigate('/messages')}
+                      className="border-border"
+                    >
+                      <MessageCircle className="w-4 h-4 mr-1" /> Message
+                    </Button>
+                  </div>
                 )}
               </div>
 
@@ -166,9 +180,9 @@ export default function UserProfilePage() {
                   <span className="text-muted-foreground text-sm">following</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Heart className="w-4 h-4 text-accent" />
-                  <span className="font-semibold">{favorites.length}</span>
-                  <span className="text-muted-foreground text-sm">favorites</span>
+                  <Eye className="w-4 h-4 text-primary" />
+                  <span className="font-semibold">{watchCount}</span>
+                  <span className="text-muted-foreground text-sm">watched</span>
                 </div>
                 {avgRating && (
                   <div className="flex items-center gap-2">
@@ -191,7 +205,7 @@ export default function UserProfilePage() {
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {topFavorites.map((fav) => fav.film && (
-                <FilmCard key={fav.id} film={fav.film} />
+                <FilmCard key={fav.id} film={fav.film} isTop3 />
               ))}
             </div>
           </div>

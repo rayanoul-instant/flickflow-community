@@ -101,13 +101,13 @@ const Index = () => {
           </div>
 
           {loadingRecent ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[...Array(4)].map((_, i) => (
                 <div key={i} className="aspect-[16/9] rounded-xl bg-muted animate-pulse" />
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {(featuredFilms || recentFilms)?.slice(0, 4).map((film) => (
                 <FilmCard key={film.id} film={film} />
               ))}
