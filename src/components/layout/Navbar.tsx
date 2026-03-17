@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Search as SearchIcon, MessageSquareText, User, Settings, LogIn } from 'lucide-react';
+import { Home, Search as SearchIcon, MessageSquareText, User, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
@@ -10,9 +10,8 @@ import { useState } from 'react';
 const dockItems = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/search', label: 'Search', icon: SearchIcon },
-  { href: '/messages', label: 'Messages', icon: MessageSquareText, isCenter: true },
+  { href: '/messages', label: 'Messages', icon: MessageSquareText },
   { href: '/account', label: 'Account', icon: User },
-  { href: '/discussions', label: 'Discussions', icon: Settings },
 ];
 
 export function Navbar({ showLogo = true }: { showLogo?: boolean }) {
@@ -48,7 +47,6 @@ export function Navbar({ showLogo = true }: { showLogo?: boolean }) {
               border: '1px solid hsl(270 40% 25% / 0.5)',
             }}
           >
-            {/* Dust motes */}
             <div className="absolute -top-6 left-6 w-1 h-1 rounded-full bg-primary/25 animate-pulse" />
             <div className="absolute -top-4 right-10 w-1 h-1 rounded-full bg-accent/20 animate-pulse" style={{ animationDelay: '0.4s' }} />
 
@@ -58,15 +56,15 @@ export function Navbar({ showLogo = true }: { showLogo?: boolean }) {
 
               return (
                 <div key={item.href} className="relative flex flex-col items-center">
-                  {/* Tooltip */}
+                  {/* Tooltip below */}
                   <AnimatePresence>
                     {hovered && (
                       <motion.div
-                        initial={{ opacity: 0, y: 6, scale: 0.85 }}
+                        initial={{ opacity: 0, y: -6, scale: 0.85 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 6, scale: 0.85 }}
+                        exit={{ opacity: 0, y: -6, scale: 0.85 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute -top-11 z-10 px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-widest uppercase whitespace-nowrap"
+                        className="absolute -bottom-11 z-10 px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-widest uppercase whitespace-nowrap"
                         style={{
                           background: 'hsl(265 25% 10% / 0.95)',
                           border: '1.5px solid hsl(180 70% 70% / 0.7)',
@@ -79,25 +77,8 @@ export function Navbar({ showLogo = true }: { showLogo?: boolean }) {
                     )}
                   </AnimatePresence>
 
-                  {/* Active badge for center item */}
-                  {item.isCenter && active && (
-                    <div
-                      className="absolute -top-1 -right-0.5 z-20 w-4 h-4 rounded-full flex items-center justify-center"
-                      style={{
-                        background: 'hsl(180 70% 75%)',
-                        boxShadow: '0 0 8px hsl(180 70% 70% / 0.6)',
-                      }}
-                    >
-                      <svg viewBox="0 0 24 24" fill="hsl(265 25% 15%)" className="w-2.5 h-2.5">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                      </svg>
-                    </div>
-                  )}
-
                   <motion.div
-                    animate={{
-                      scale: hovered ? 1.3 : 1,
-                    }}
+                    animate={{ scale: hovered ? 1.3 : 1 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 20 }}
                   >
                     <Link
@@ -106,11 +87,7 @@ export function Navbar({ showLogo = true }: { showLogo?: boolean }) {
                       onMouseLeave={() => setHoveredItem(null)}
                       className="relative w-11 h-11 rounded-full flex items-center justify-center"
                       style={{
-                        background: item.isCenter
-                          ? (active
-                            ? 'linear-gradient(145deg, hsl(260 10% 45%), hsl(260 10% 35%))'
-                            : 'linear-gradient(145deg, hsl(260 10% 40%), hsl(260 10% 30%))')
-                          : 'transparent',
+                        background: 'transparent',
                         border: `2px solid ${
                           hovered
                             ? 'hsl(270 70% 60% / 0.9)'
@@ -132,15 +109,13 @@ export function Navbar({ showLogo = true }: { showLogo?: boolean }) {
                           active && !hovered && "drop-shadow-[0_0_6px_hsl(270_70%_55%/0.6)]"
                         )}
                         style={{
-                          color: item.isCenter
-                            ? 'hsl(260 10% 25%)'
-                            : hovered
-                              ? 'hsl(180 70% 80%)'
-                              : active
-                                ? 'hsl(180 60% 70%)'
-                                : 'hsl(180 40% 55%)',
+                          color: hovered
+                            ? 'hsl(180 70% 80%)'
+                            : active
+                              ? 'hsl(180 60% 70%)'
+                              : 'hsl(180 40% 55%)',
                         }}
-                        strokeWidth={item.isCenter ? 2.5 : 1.5}
+                        strokeWidth={1.5}
                       />
                     </Link>
                   </motion.div>
