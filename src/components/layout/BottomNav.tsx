@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Search, MessageSquareText, User, Settings } from 'lucide-react';
+import { Home, Search, MessageSquareText, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -7,9 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 const navItems = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/search', label: 'Search', icon: Search },
-  { href: '/messages', label: 'Messages', icon: MessageSquareText, isCenter: true },
+  { href: '/messages', label: 'Messages', icon: MessageSquareText },
   { href: '/account', label: 'Account', icon: User },
-  { href: '/discussions', label: 'Discussions', icon: Settings },
 ];
 
 export function BottomNav() {
@@ -25,7 +24,6 @@ export function BottomNav() {
     <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pointer-events-none md:hidden">
       <nav className="pointer-events-auto relative mb-4 mx-3">
         <div className="relative flex items-center justify-center">
-          {/* Dust motes */}
           <div className="absolute -top-8 left-10 w-1.5 h-1.5 rounded-full bg-primary/30 animate-pulse" />
           <div className="absolute -top-5 right-14 w-1 h-1 rounded-full bg-accent/20 animate-pulse" style={{ animationDelay: '0.3s' }} />
           <div className="absolute -top-10 left-1/2 w-1 h-1 rounded-full bg-primary/20 animate-pulse" style={{ animationDelay: '0.5s' }} />
@@ -44,15 +42,15 @@ export function BottomNav() {
 
               return (
                 <div key={item.href} className="relative flex flex-col items-center">
-                  {/* Tooltip */}
+                  {/* Tooltip below */}
                   <AnimatePresence>
                     {hovered && (
                       <motion.div
-                        initial={{ opacity: 0, y: 6, scale: 0.85 }}
+                        initial={{ opacity: 0, y: -6, scale: 0.85 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 6, scale: 0.85 }}
+                        exit={{ opacity: 0, y: -6, scale: 0.85 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute -top-12 z-10 px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-widest uppercase whitespace-nowrap"
+                        className="absolute -bottom-12 z-10 px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-widest uppercase whitespace-nowrap"
                         style={{
                           background: 'hsl(265 25% 10% / 0.95)',
                           border: '1.5px solid hsl(180 70% 70% / 0.7)',
@@ -65,25 +63,8 @@ export function BottomNav() {
                     )}
                   </AnimatePresence>
 
-                  {/* Active badge for center item */}
-                  {item.isCenter && active && (
-                    <div
-                      className="absolute -top-1 -right-1 z-20 w-5 h-5 rounded-full flex items-center justify-center"
-                      style={{
-                        background: 'hsl(180 70% 75%)',
-                        boxShadow: '0 0 10px hsl(180 70% 70% / 0.6)',
-                      }}
-                    >
-                      <svg viewBox="0 0 24 24" fill="hsl(265 25% 15%)" className="w-3 h-3">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                      </svg>
-                    </div>
-                  )}
-
                   <motion.div
-                    animate={{
-                      scale: hovered ? 1.25 : 1,
-                    }}
+                    animate={{ scale: hovered ? 1.25 : 1 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 20 }}
                   >
                     <Link
@@ -94,11 +75,7 @@ export function BottomNav() {
                       onTouchEnd={() => setTimeout(() => setHoveredItem(null), 800)}
                       className="relative w-14 h-14 rounded-full flex items-center justify-center"
                       style={{
-                        background: item.isCenter
-                          ? (active
-                            ? 'linear-gradient(145deg, hsl(260 10% 45%), hsl(260 10% 35%))'
-                            : 'linear-gradient(145deg, hsl(260 10% 40%), hsl(260 10% 30%))')
-                          : 'transparent',
+                        background: 'transparent',
                         border: `2px solid ${
                           hovered
                             ? 'hsl(270 70% 60% / 0.9)'
@@ -120,15 +97,13 @@ export function BottomNav() {
                           active && !hovered && "drop-shadow-[0_0_6px_hsl(270_70%_55%/0.6)]"
                         )}
                         style={{
-                          color: item.isCenter
-                            ? 'hsl(260 10% 25%)'
-                            : hovered
-                              ? 'hsl(180 70% 80%)'
-                              : active
-                                ? 'hsl(180 60% 70%)'
-                                : 'hsl(180 40% 55%)',
+                          color: hovered
+                            ? 'hsl(180 70% 80%)'
+                            : active
+                              ? 'hsl(180 60% 70%)'
+                              : 'hsl(180 40% 55%)',
                         }}
-                        strokeWidth={item.isCenter ? 2.5 : 1.5}
+                        strokeWidth={1.5}
                       />
                     </Link>
                   </motion.div>
@@ -138,7 +113,6 @@ export function BottomNav() {
           </div>
         </div>
 
-        {/* Branding star */}
         <div className="absolute -bottom-0.5 -right-1 w-3 h-3 text-muted-foreground/40">
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
             <path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z" />
