@@ -92,13 +92,13 @@ export function Navbar({ showLogo = true }: { showLogo?: boolean }) {
                           hovered
                             ? 'hsl(270 70% 60% / 0.9)'
                             : active
-                              ? 'hsl(270 60% 55% / 0.8)'
+                              ? 'hsl(270 70% 65% / 0.95)'
                               : 'hsl(270 40% 35% / 0.6)'
                         }`,
                         boxShadow: hovered
                           ? '0 0 20px hsl(270 70% 55% / 0.5), inset 0 0 10px hsl(270 70% 55% / 0.15)'
                           : active
-                            ? '0 0 10px hsl(270 70% 55% / 0.3)'
+                            ? '0 0 18px hsl(270 70% 60% / 0.45), inset 0 0 10px hsl(270 70% 60% / 0.15)'
                             : 'none',
                       }}
                     >

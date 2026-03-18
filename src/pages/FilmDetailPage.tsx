@@ -290,7 +290,7 @@ export default function FilmDetailPage() {
               Copy link to clipboard
             </Button>
             <div>
-              <p className="text-sm text-muted-foreground mb-3">Send to someone you follow:</p>
+              <p className="text-sm text-muted-foreground mb-3"><span className="font-bold text-foreground">Send</span> to someone you follow:</p>
               {(followingList || []).length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-4">You're not following anyone yet.</p>
               ) : (
