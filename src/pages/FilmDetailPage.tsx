@@ -180,7 +180,7 @@ export default function FilmDetailPage() {
               onClick={handleFavorite}
               className={cn("border-border flex-shrink-0", isFavorited && "bg-accent/20 text-accent border-accent")}
             >
-              <Heart className={cn("w-5 h-5", isFavorited && "fill-accent")} />
+              <Bookmark className={cn("w-5 h-5", isFavorited && "fill-accent")} />
             </Button>
           </div>
 
