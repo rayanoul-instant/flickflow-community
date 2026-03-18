@@ -70,7 +70,7 @@ export function FilmCard({ film, featured = false, isTop3 = false }: FilmCardPro
             </div>
           </div>
 
-          {/* Favorite / Like Button */}
+          {/* Save / Bookmark Button */}
           {user && !isTop3 && (
             <Button
               variant="ghost"
@@ -81,16 +81,14 @@ export function FilmCard({ film, featured = false, isTop3 = false }: FilmCardPro
                 isFavorited ? "text-accent" : "text-foreground/80 hover:text-accent"
               )}
             >
-              <Heart className={cn("w-5 h-5", isFavorited && "fill-accent")} />
+              <Bookmark className={cn("w-5 h-5", isFavorited && "fill-accent")} />
             </Button>
           )}
 
-          {/* Top 3 overlapping hearts */}
+          {/* Top 3 gold trophy badge */}
           {isTop3 && (
-            <div className="absolute top-2 right-2 z-10 flex -space-x-1.5">
-              <Heart className="w-4 h-4 text-accent fill-accent drop-shadow-md" />
-              <Heart className="w-4 h-4 text-pink-400 fill-pink-400 drop-shadow-md" />
-              <Heart className="w-4 h-4 text-red-400 fill-red-400 drop-shadow-md" />
+            <div className="absolute top-2 left-2 z-10 w-8 h-8 rounded-md flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #c5a028, #e8c840, #a08020)' }}>
+              <Trophy className="w-4 h-4 text-white drop-shadow-md" />
             </div>
           )}
 

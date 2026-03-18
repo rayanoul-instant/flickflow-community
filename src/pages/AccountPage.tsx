@@ -447,17 +447,17 @@ export default function AccountPage() {
           </div>
         )}
 
-        {/* Liked Films */}
+        {/* Saved Films */}
         {!isEditing && (
           <div className="mt-8">
             <h2 className="font-display text-xl font-semibold mb-4 flex items-center gap-2">
-              <Heart className="w-5 h-5 text-accent fill-accent" />
-              Liked
+              <Bookmark className="w-5 h-5 text-accent fill-accent" />
+              Saved
             </h2>
             {(favorites || []).length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
-                <Heart className="w-10 h-10 mx-auto mb-3 opacity-20" />
-                <p>No liked films yet. Tap the heart on a film to add it here.</p>
+                <Bookmark className="w-10 h-10 mx-auto mb-3 opacity-20" />
+                <p>No saved films yet. Tap the bookmark on a film to save it here.</p>
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">

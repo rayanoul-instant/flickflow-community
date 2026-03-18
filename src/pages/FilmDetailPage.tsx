@@ -309,7 +309,9 @@ export default function FilmDetailPage() {
                         extra={u.avatar_accessories?.extra}
                       />
                       <span className="text-sm font-medium">{u.username}</span>
-                      <span className="ml-auto text-xs text-primary">Send →</span>
+                      <span className="ml-auto flex items-center justify-center gap-1 text-xs text-primary font-medium">
+                        <Send className="w-3 h-3" /> Send
+                      </span>
                     </button>
                   ))}
                 </div>
