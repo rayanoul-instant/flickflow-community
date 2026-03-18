@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Star, Clock, Heart, Edit2, Save, Film, ChevronDown, ThumbsUp, Check, X, Plus, Eye } from 'lucide-react';
+import { User, Star, Clock, Bookmark, Edit2, Save, Film, ChevronDown, ThumbsUp, Check, X, Plus, Eye, Trophy } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { FilmCard } from '@/components/films/FilmCard';
 import { AvatarDisplay, AVATAR_COLORS, AVATAR_HATS, AVATAR_FACE, AVATAR_EXTRAS } from '@/components/films/AvatarDisplay';
@@ -381,7 +381,7 @@ export default function AccountPage() {
         {!isEditing && (
           <div className="mb-8">
             <h2 className="font-display text-xl font-semibold mb-4 flex items-center gap-2">
-              <Heart className="w-5 h-5 text-accent fill-accent" />
+              <Trophy className="w-5 h-5 text-primary" style={{ color: '#c5a028' }} />
               Top 3 Favorites
             </h2>
             {topFavorites.length > 0 ? (
@@ -392,7 +392,7 @@ export default function AccountPage() {
               </div>
             ) : (
               <div className="text-center py-6 text-muted-foreground cinema-card">
-                <Heart className="w-8 h-8 mx-auto mb-2 opacity-20" />
+                <Trophy className="w-8 h-8 mx-auto mb-2 opacity-20" />
                 <p className="text-sm">No favorites yet.</p>
                 <Button variant="outline" size="sm" onClick={openEdit} className="mt-3 border-border">
                   Add your Top 3
@@ -447,17 +447,17 @@ export default function AccountPage() {
           </div>
         )}
 
-        {/* Liked Films */}
+        {/* Saved Films */}
         {!isEditing && (
           <div className="mt-8">
             <h2 className="font-display text-xl font-semibold mb-4 flex items-center gap-2">
-              <Heart className="w-5 h-5 text-accent fill-accent" />
-              Liked
+              <Bookmark className="w-5 h-5 text-accent fill-accent" />
+              Saved
             </h2>
             {(favorites || []).length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
-                <Heart className="w-10 h-10 mx-auto mb-3 opacity-20" />
-                <p>No liked films yet. Tap the heart on a film to add it here.</p>
+                <Bookmark className="w-10 h-10 mx-auto mb-3 opacity-20" />
+                <p>No saved films yet. Tap the bookmark on a film to save it here.</p>
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">

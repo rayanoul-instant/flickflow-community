@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Clock, Calendar, User, Star, Heart, Share2, ThumbsUp, MessageSquare, Film, ArrowUpRight } from 'lucide-react';
+import { ArrowLeft, Clock, Calendar, User, Star, Bookmark, Share2, ThumbsUp, MessageSquare, Film, ArrowUpRight, Send } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { VideoPlayer } from '@/components/films/VideoPlayer';
 import { StarRating } from '@/components/films/StarRating';
@@ -180,7 +180,7 @@ export default function FilmDetailPage() {
               onClick={handleFavorite}
               className={cn("border-border flex-shrink-0", isFavorited && "bg-accent/20 text-accent border-accent")}
             >
-              <Heart className={cn("w-5 h-5", isFavorited && "fill-accent")} />
+              <Bookmark className={cn("w-5 h-5", isFavorited && "fill-accent")} />
             </Button>
           </div>
 
@@ -309,7 +309,9 @@ export default function FilmDetailPage() {
                         extra={u.avatar_accessories?.extra}
                       />
                       <span className="text-sm font-medium">{u.username}</span>
-                      <span className="ml-auto text-xs text-primary">Send →</span>
+                      <span className="ml-auto flex items-center justify-center gap-1 text-xs text-primary font-medium">
+                        <Send className="w-3 h-3" /> Send
+                      </span>
                     </button>
                   ))}
                 </div>

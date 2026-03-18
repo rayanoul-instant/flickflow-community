@@ -27,10 +27,10 @@ const Index = () => {
   return (
     <Layout showNavLogo={scrolled}>
       {/* Hero with large logo */}
-      <section className="relative flex items-center justify-center py-20 md:py-32 overflow-hidden">
+      <section className="relative flex items-center justify-center py-28 md:py-40 overflow-hidden">
         <div className="absolute inset-0">
-          <img src={heroBg} alt="" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/70 to-background" />
+          <img src={heroBg} alt="" className="w-full h-full object-cover object-center" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/50 to-background" />
         </div>
         <div className="container relative z-10 px-4 text-center">
           <motion.img
