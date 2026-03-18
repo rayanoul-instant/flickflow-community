@@ -381,7 +381,7 @@ export default function AccountPage() {
         {!isEditing && (
           <div className="mb-8">
             <h2 className="font-display text-xl font-semibold mb-4 flex items-center gap-2">
-              <Heart className="w-5 h-5 text-accent fill-accent" />
+              <Trophy className="w-5 h-5 text-primary" style={{ color: '#c5a028' }} />
               Top 3 Favorites
             </h2>
             {topFavorites.length > 0 ? (
