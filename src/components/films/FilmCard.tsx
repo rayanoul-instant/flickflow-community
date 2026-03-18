@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Clock, Star, Play, Heart } from 'lucide-react';
+import { Clock, Star, Play, Bookmark, Trophy } from 'lucide-react';
 import { Film, GENRE_LABELS } from '@/types/database';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
