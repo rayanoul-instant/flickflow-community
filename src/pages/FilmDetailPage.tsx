@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Clock, Calendar, User, Star, Heart, Share2, ThumbsUp, MessageSquare, Film, ArrowUpRight } from 'lucide-react';
+import { ArrowLeft, Clock, Calendar, User, Star, Bookmark, Share2, ThumbsUp, MessageSquare, Film, ArrowUpRight, Send } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { VideoPlayer } from '@/components/films/VideoPlayer';
 import { StarRating } from '@/components/films/StarRating';
