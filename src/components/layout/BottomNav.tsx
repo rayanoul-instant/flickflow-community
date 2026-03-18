@@ -42,15 +42,15 @@ export function BottomNav() {
 
               return (
                 <div key={item.href} className="relative flex flex-col items-center">
-                  {/* Tooltip below */}
+                  {/* Tooltip above on mobile */}
                   <AnimatePresence>
                     {hovered && (
                       <motion.div
-                        initial={{ opacity: 0, y: -6, scale: 0.85 }}
+                        initial={{ opacity: 0, y: 6, scale: 0.85 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -6, scale: 0.85 }}
+                        exit={{ opacity: 0, y: 6, scale: 0.85 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute -bottom-12 z-10 px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-widest uppercase whitespace-nowrap"
+                        className="absolute -top-12 z-10 px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-widest uppercase whitespace-nowrap"
                         style={{
                           background: 'hsl(265 25% 10% / 0.95)',
                           border: '1.5px solid hsl(180 70% 70% / 0.7)',
