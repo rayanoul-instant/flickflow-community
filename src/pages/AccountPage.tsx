@@ -392,7 +392,7 @@ export default function AccountPage() {
               </div>
             ) : (
               <div className="text-center py-6 text-muted-foreground cinema-card">
-                <Heart className="w-8 h-8 mx-auto mb-2 opacity-20" />
+                <Trophy className="w-8 h-8 mx-auto mb-2 opacity-20" />
                 <p className="text-sm">No favorites yet.</p>
                 <Button variant="outline" size="sm" onClick={openEdit} className="mt-3 border-border">
                   Add your Top 3
