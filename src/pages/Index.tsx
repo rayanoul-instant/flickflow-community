@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import heroBg from '@/assets/hero-bg.png';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Star, ArrowRight, TrendingUp, Sparkles, MessageSquare } from 'lucide-react';
