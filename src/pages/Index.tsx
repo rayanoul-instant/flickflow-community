@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import heroBg from '@/assets/hero-bg.png';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Star, ArrowRight, TrendingUp, Sparkles, MessageSquare } from 'lucide-react';
@@ -27,7 +28,10 @@ const Index = () => {
     <Layout showNavLogo={scrolled}>
       {/* Hero with large logo */}
       <section className="relative flex items-center justify-center py-20 md:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
+        <div className="absolute inset-0">
+          <img src={heroBg} alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/70 to-background" />
+        </div>
         <div className="container relative z-10 px-4 text-center">
           <motion.img
             src={logoInstant}
