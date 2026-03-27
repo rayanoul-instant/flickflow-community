@@ -1,9 +1,8 @@
 import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Home, Search as SearchIcon, MessageSquareText, User, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
-import { cn } from '@/lib/utils';
 import logoInstant from '@/assets/logo-instant.png';
 import { useState } from 'react';
 
@@ -40,86 +39,54 @@ export function Navbar({ showLogo = true }: { showLogo?: boolean }) {
 
           {/* Desktop floating dock */}
           <div
-            className="hidden md:flex items-center gap-4 rounded-[28px] px-5 py-2.5 relative"
+            className="hidden md:flex items-center gap-3 rounded-[24px] px-4 py-2 relative"
             style={{
-              background: 'linear-gradient(145deg, hsl(270 30% 18%), hsl(265 25% 12%))',
-              boxShadow: '0 0 24px hsl(270 70% 40% / 0.2), 0 6px 24px hsl(0 0% 0% / 0.4), inset 0 1px 0 hsl(270 40% 30% / 0.3)',
-              border: '1px solid hsl(270 40% 25% / 0.5)',
+              background: 'linear-gradient(145deg, hsl(270 20% 50% / 0.35), hsl(265 30% 40% / 0.25))',
+              backdropFilter: 'blur(24px) saturate(1.4)',
+              WebkitBackdropFilter: 'blur(24px) saturate(1.4)',
+              boxShadow: '0 8px 32px hsl(270 40% 10% / 0.4), inset 0 1px 0 hsl(0 0% 100% / 0.08), inset 0 -1px 0 hsl(270 30% 20% / 0.3)',
+              border: '1px solid hsl(0 0% 100% / 0.12)',
             }}
           >
-            <div className="absolute -top-6 left-6 w-1 h-1 rounded-full bg-primary/25 animate-pulse" />
-            <div className="absolute -top-4 right-10 w-1 h-1 rounded-full bg-accent/20 animate-pulse" style={{ animationDelay: '0.4s' }} />
-
             {dockItems.map((item) => {
               const active = isActive(item.href);
               const hovered = hoveredItem === item.href;
 
               return (
-                <div key={item.href} className="relative flex flex-col items-center">
-                  {/* Tooltip below */}
-                  <AnimatePresence>
-                    {hovered && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -6, scale: 0.85 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -6, scale: 0.85 }}
-                        transition={{ duration: 0.15 }}
-                        className="absolute -bottom-11 z-10 px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-widest uppercase whitespace-nowrap"
-                        style={{
-                          background: 'hsl(265 25% 10% / 0.95)',
-                          border: '1.5px solid hsl(180 70% 70% / 0.7)',
-                          color: 'hsl(180 70% 90%)',
-                          boxShadow: '0 0 16px hsl(180 70% 70% / 0.3), 0 0 4px hsl(180 70% 70% / 0.2)',
-                        }}
-                      >
-                        {item.label}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  <motion.div
-                    animate={{ scale: hovered ? 1.3 : 1 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                <motion.div
+                  key={item.href}
+                  animate={{ scale: hovered ? 1.15 : 1 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                >
+                  <Link
+                    to={item.href}
+                    onMouseEnter={() => setHoveredItem(item.href)}
+                    onMouseLeave={() => setHoveredItem(null)}
+                    className="relative w-11 h-11 rounded-[14px] flex items-center justify-center transition-all duration-300"
+                    style={{
+                      background: active
+                        ? 'linear-gradient(145deg, hsl(0 0% 100% / 0.22), hsl(0 0% 100% / 0.10))'
+                        : hovered
+                          ? 'hsl(0 0% 100% / 0.08)'
+                          : 'transparent',
+                      boxShadow: active
+                        ? 'inset 0 1px 0 hsl(0 0% 100% / 0.15), 0 2px 8px hsl(270 40% 10% / 0.2)'
+                        : 'none',
+                    }}
                   >
-                    <Link
-                      to={item.href}
-                      onMouseEnter={() => setHoveredItem(item.href)}
-                      onMouseLeave={() => setHoveredItem(null)}
-                      className="relative w-11 h-11 rounded-full flex items-center justify-center"
+                    <item.icon
+                      className="w-5 h-5 transition-all duration-200"
                       style={{
-                        background: 'transparent',
-                        border: `2px solid ${
-                          hovered
-                            ? 'hsl(270 70% 60% / 0.9)'
-                            : active
-                              ? 'hsl(270 70% 65% / 0.95)'
-                              : 'hsl(270 40% 35% / 0.6)'
-                        }`,
-                        boxShadow: hovered
-                          ? '0 0 20px hsl(270 70% 55% / 0.5), inset 0 0 10px hsl(270 70% 55% / 0.15)'
-                          : active
-                            ? '0 0 18px hsl(270 70% 60% / 0.45), inset 0 0 10px hsl(270 70% 60% / 0.15)'
-                            : 'none',
+                        color: active
+                          ? 'hsl(0 0% 100%)'
+                          : hovered
+                            ? 'hsl(270 20% 85%)'
+                            : 'hsl(270 15% 65%)',
                       }}
-                    >
-                      <item.icon
-                        className={cn(
-                          "w-5 h-5 transition-all duration-200",
-                          hovered && "drop-shadow-[0_0_8px_hsl(270_70%_55%/0.7)]",
-                          active && !hovered && "drop-shadow-[0_0_6px_hsl(270_70%_55%/0.6)]"
-                        )}
-                        style={{
-                          color: hovered
-                            ? 'hsl(180 70% 80%)'
-                            : active
-                              ? 'hsl(180 60% 70%)'
-                              : 'hsl(180 40% 55%)',
-                        }}
-                        strokeWidth={1.5}
-                      />
-                    </Link>
-                  </motion.div>
-                </div>
+                      strokeWidth={active ? 2 : 1.5}
+                    />
+                  </Link>
+                </motion.div>
               );
             })}
           </div>
