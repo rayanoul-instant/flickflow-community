@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
-import { Navbar } from './Navbar';
 import { BottomNav } from './BottomNav';
+import { DesktopDock } from './DesktopDock';
 
 interface LayoutProps {
   children: ReactNode;
@@ -10,12 +10,12 @@ interface LayoutProps {
   showNavLogo?: boolean;
 }
 
-export function Layout({ children, hideNav = false, showNavLogo = true }: LayoutProps) {
+export function Layout({ children, hideNav = false }: LayoutProps) {
   const location = useLocation();
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Navbar removed */}
+      {!hideNav && <DesktopDock />}
       <motion.main
         key={location.pathname}
         initial={{ opacity: 0, y: 8 }}
