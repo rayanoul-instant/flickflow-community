@@ -47,10 +47,10 @@ const Index = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <h1 className="text-3xl md:text-5xl font-extrabold mb-2 tracking-tight">
-              Welcome to <span className="text-gradient-gold">Instant</span>.
+              Join a community of <span className="text-gradient-gold">short film lovers</span>
             </h1>
             <p className="text-muted-foreground max-w-lg mx-auto text-sm md:text-base">
-              The home of short films. Watch. Explore. Share.
+              Watch • Explore • Share
             </p>
           </motion.div>
         </div>
