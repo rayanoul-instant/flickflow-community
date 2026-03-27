@@ -1,8 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Search, MessageSquareText, User } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 
 const navItems = [
   { href: '/', label: 'Home', icon: Home },

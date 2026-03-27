@@ -1,9 +1,8 @@
 import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Home, Search as SearchIcon, MessageSquareText, User, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
-import { cn } from '@/lib/utils';
 import logoInstant from '@/assets/logo-instant.png';
 import { useState } from 'react';
 
