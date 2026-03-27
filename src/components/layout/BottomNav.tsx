@@ -10,7 +10,6 @@ const navItems = [
 
 export function BottomNav() {
   const location = useLocation();
-  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
   const isActive = (href: string) => {
     if (href === '/') return location.pathname === '/';
